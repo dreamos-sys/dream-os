@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝓓 DREAM OS v4.2 - Al Fikri School</title>
+    
+    <!-- PWA CONFIG -->
+    <meta name="theme-color" content="#075E54">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <!-- ARABIC FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- STYLES -->
+    <link rel="stylesheet" href="css/dream-styles.css">
+    <link rel="stylesheet" href="css/spiritual-styles.css">
+    
+    <style>
+        /* SPIRITUAL LAUNCH STYLES */
+        .spiritual-header {
+            background: linear-gradient(135deg, #075E54 0%, #25D366 100%);
+            color: #FFD700;
+            text-align: center;
+            padding: 15px 20px;
+            border-bottom: 3px solid #FFD700;
+            font-family: 'Amiri', serif;
+        }
+        
+        .basmalah {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .shalawat {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .launch-badge {
+            display: inline-block;
+            background: #FFD700;
+            color: #075E54;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-top: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* LOGIN CONTAINER */
+        .login-container {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .dream-logo {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 5em;
+            color: #FFD700;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+            animation: logoGlow 3s infinite alternate;
+        }
+        
+        @keyframes logoGlow {
+            from { text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+            to { text-shadow: 0 0 20px rgba(255,215,0,0.8), 0 0 30px rgba(255,149,0,0.3); }
+        }
+        
+        /* PWA INSTALL BANNER */
+        .install-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(45deg, #075E54, #25D366);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            border-top: 2px solid #FFD700;
+        }
+        
+        /* DEVICE OPTIMIZATION BADGE */
+        .device-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 105, 0, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- SPIRITUAL HEADER -->
+    <header class="spiritual-header">
+        <div class="basmalah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+        <div class="shalawat">اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ</div>
+        <div class="launch-badge">🚀 BISMILLAH LAUNCH v1.0</div>
+    </header>
+    
+    <!-- DEVICE OPTIMIZATION BADGE -->
+    <div class="device-badge" id="deviceBadge">📱 Detecting...</div>
+    
+    <!-- PWA INSTALL BANNER -->
+    <div class="install-banner" id="installBanner">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <span class="dream-logo" style="font-size: 1.5em;">𝓓</span>
+            <div style="flex: 1;">
+                <div style="font-weight: bold;">Install DREAM OS App</div>
+                <div style="font-size: 0.8em; opacity: 0.9;">Get native app experience on homescreen</div>
+            </div>
+            <button onclick="installApp()" style="background: #FFD700; color: #075E54; 
+                   border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer;">
+                INSTALL
+            </button>
+            <button onclick="hideBanner()" style="background: transparent; color: white; 
+                   border: none; font-size: 1.2em; cursor: pointer; padding: 0 10px;">
+                ×
+            </button>
+        </div>
+    </div>
+    
+    <!-- LOGIN CONTAINER -->
+    <div class="login-container">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div class="dream-logo">𝓓</div>
+            <h1 style="color: #075E54; margin: 0;">DREAM OS v4.2</h1>
+            <p style="color: #666; margin: 5px 0 0 0;">Al Fikri School Management System</p>
+            <p style="color: #FF6900; font-size: 0.9em; margin: 5px 0;">
+                <strong>8GB/128GB Helio G85 Optimized</strong>
+            </p>
+        </div>
+        
+        <!-- ACCESS MODE SELECTION -->
+        <div class="form-group">
+            <label for="accessMode">👑 Access Mode</label>
+            <select id="accessMode" class="dream-select">
+                <option value="user">👤 User Biasa</option>
+                <option value="admin">👑 Admin (Pak Erwin)</option>
+                <option value="ghost">👻 Ghost Mode (Developer)</option>
+                <option value="inventory">📦 Inventory Admin</option>
+                <option value="warehouse">🏪 Warehouse Admin</option>
+            </select>
+        </div>
+        
+        <!-- PASSWORD INPUT -->
+        <div class="form-group">
+            <label for="password">🔐 Password</label>
+            <div style="position: relative;">
+                <input type="password" id="password" class="dream-input" 
+                       placeholder="Enter password or use fingerprint"
+                       autocomplete="current-password">
+                
+                <!-- FINGERPRINT BUTTON -->
+                <span onclick="useFingerprint()" 
+                      style="position: absolute; right: 50px; top: 50%; transform: translateY(-50%); 
+                             cursor: pointer; font-size: 1.2em; color: #075E54;"
+                      title="Login with fingerprint" id="fingerprintBtn">
+                    🖐️
+                </span>
+                
+                <!-- SHOW/HIDE PASSWORD -->
+                <span onclick="togglePassword()" 
+                      style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); 
+                             cursor: pointer; font-size: 1.2em; color: #666;"
+                      title="Show/Hide password">
+                    👁️
+                </span>
+            </div>
+        </div>
+        
+        <!-- LOGIN BUTTON -->
+        <button class="dream-btn primary" onclick="login()" 
+                style="width: 100%; padding: 15px; margin-top: 10px; font-size: 1.1em;">
+            🚀 Login to DREAM OS
+        </button>
+        
+        <!-- SECONDARY BUTTONS -->
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="dream-btn secondary" onclick="saveCredentials()" style="flex: 1;">
+                💾 Save Password
+            </button>
+            <button class="dream-btn secondary" onclick="setupFingerprint()" style="flex: 1;">
+                🖐️ Setup Fingerprint
+            </button>
+        </div>
+        
+        <!-- STATUS PANEL -->
+        <div class="dream-card" style="margin-top: 20px; padding: 15px; text-align: center;">
+            <div id="biometricStatus">🔍 Checking device capabilities...</div>
+            <div id="pwaStatus" style="margin-top: 5px; font-size: 0.9em;"></div>
+            <div id="deviceInfo" style="margin-top: 10px; font-size: 0.8em; color: #666;"></div>
+        </div>
+        
+        <!-- QUICK ACCESS CREDENTIALS -->
+        <div class="dream-card" style="margin-top: 15px; padding: 15px; background: #f8f9fa;">
+            <div style="font-size: 0.9em; color: #666; text-align: center;">
+                <strong>Quick Access:</strong><br>
+                <span style="font-family: monospace; font-size: 0.8em;">
+                    Ghost: 418626 | Admin: @dm1n_Sec2025
+                </span>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div style="text-align: center; margin-top: 30px; color: #999; font-size: 0.8em;">
+            <p>DREAM OS v1.0 • بِإِذْنِ اللهِ تَعَالَى</p>
+            <p style="margin-top: 5px;">
+                <a href="admin/launch-monitor.html" style="color: #075E54; text-decoration: none;">
+                    📊 Launch Monitor
+                </a> • 
+                <a href="javascript:showSystemInfo()" style="color: #075E54; text-decoration: none;">
+                    ⚙️ System Info
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="js/helio-g85-optimizer.js" defer></script>
+    <script src="js/8gb-128gb-optimizer.js" defer></script>
+    <script src="js/security.js" defer></script>
+    <script src="js/monitoring.js" defer></script>
+    
+    <script>
+        // ==================== GLOBAL VARIABLES ====================
+        let deferredPrompt = null;
+        let isFingerprintAvailable = false;
+        let deviceOptimizer = null;
+        
+        // ==================== PASSWORD TOGGLE ====================
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleBtn = event.target;
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleBtn.textContent = '🙈';
+                
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    passwordField.type = 'password';
+                    toggleBtn.textContent = '👁️';
+                }, 5000);
+            } else {
+                passwordField.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+        
+        // ==================== FINGERPRINT AUTH ====================
+        async function checkFingerprintSupport() {
+            if (!window.PublicKeyCredential) {
+                document.getElementById('biometricStatus').innerHTML = 
+                    'ℹ️ Fingerprint not supported in this browser';
+                return false;
+            }
+            
+            try {
+                const available = await PublicKeyCredential
+                    .isUserVerifyingPlatformAuthenticatorAvailable();
+                
+                if (available) {
+                    isFingerprintAvailable = true;
+                    document.getElementById('biometricStatus').innerHTML = 
+                        '✅ Fingerprint authentication available';
+                    document.getElementById('biometricStatus').style.color = '#25D366';
+                    return true;
+                } else {
+                    document.getElementById('biometricStatus').innerHTML = 
+                        '⚠️ No fingerprint sensor detected';
+                    return false;
+                }
+            } catch (error) {
+                document.getElementById('biometricStatus').innerHTML = 
+                    '⚠️ Error checking fingerprint support';
+                return false;
+            }
+        }
+        
+        async function useFingerprint() {
+            if (!isFingerprintAvailable) {
+                alert('Fingerprint authentication is not available on this device');
+                return;
+            }
+            
+            try {
+                // Simulate fingerprint authentication
+                alert('🔐 Please scan your fingerprint...');
+                
+                // After successful fingerprint, auto-fill password
+                const selectedMode = document.getElementById('accessMode').value;
+                
+                // Map mode to passwords
+                const passwordMap = {
+                    'user': 'user_@1234',
+                    'admin': '@dm1n_Sec2025',
+                    'ghost': '418626',
+                    'inventory': '4dm1in_6969@01',
+                    'warehouse': '4dm1n_9696@02'
+                };
+                
+                document.getElementById('password').value = passwordMap[selectedMode];
+                
+                // Auto-login after 1 second
+                setTimeout(() => {
+                    login();
+                }, 1000);
+                
+            } catch (error) {
+                alert('Fingerprint authentication failed: ' + error.message);
+            }
+        }
+        
+        async function setupFingerprint() {
+            if (!isFingerprintAvailable) {
+                alert('Fingerprint setup not available on this device');
+                return;
+            }
+            
+            alert('🖐️ Fingerprint setup will be implemented in next version');
+            // Will implement WebAuthn API in next update
+        }
+        
+        // ==================== LOGIN FUNCTION ====================
+        function login() {
+            const password = document.getElementById('password').value;
+            const mode = document.getElementById('accessMode').value;
+            
+            // Password validation
+            const passwordMap = {
+                'user': 'user_@1234',
+                'admin': '@dm1n_Sec2025',
+                'ghost': '418626',
+                'inventory': '4dm1in_6969@01',
+                'warehouse': '4dm1n_9696@02'
+            };
+            
+            if (password === passwordMap[mode]) {
+                // Save login state
+                localStorage.setItem('dreamos_logged_in', 'true');
+                localStorage.setItem('dreamos_mode', mode);
+                localStorage.setItem('dreamos_timestamp', Date.now());
+                
+                // Track login event
+                if (window.dreamMonitor) {
+                    dreamMonitor.trackEvent('login_success', { mode: mode });
+                }
+                
+                // Show success message with spiritual touch
+                const successMessages = {
+                    'user': '👤 Welcome User!',
+                    'admin': '👑 Welcome Admin!',
+                    'ghost': '👻 Ghost Mode Activated!',
+                    'inventory': '📦 Inventory Access Granted!',
+                    'warehouse': '🏪 Warehouse Access Granted!'
+                };
+                
+                alert(`✅ ${successMessages[mode] || 'Login successful!'}`);
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } else {
+                // Failed login attempt
+                if (window.dreamMonitor) {
+                    dreamMonitor.trackError(new Error('Failed login attempt'));
+                }
+                
+                alert('❌ Invalid password for selected mode');
+            }
+        }
+        
+        // ==================== PWA INSTALLATION ====================
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install banner after 3 seconds
+            setTimeout(() => {
+                if (!localStorage.getItem('install_banner_hidden')) {
+                    document.getElementById('installBanner').style.display = 'block';
+                }
+            }, 3000);
+            
+            // Update PWA status
+            document.getElementById('pwaStatus').innerHTML = 
+                '📱 Can be installed as app';
+            document.getElementById('pwaStatus').style.color = '#075E54';
+        });
+        
+        window.addEventListener('appinstalled', () => {
+            deferredPrompt = null;
+            document.getElementById('installBanner').style.display = 'none';
+            
+            document.getElementById('pwaStatus').innerHTML = 
+                '✅ Installed as app';
+            document.getElementById('pwaStatus').style.color = '#25D366';
+            
+            // Track installation
+            if (window.dreamMonitor) {
+                dreamMonitor.trackEvent('pwa_installed');
+            }
+        });
+        
+        async function installApp() {
+            if (!deferredPrompt) {
+                alert('Installation not available');
+                return;
+            }
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('User accepted install');
+                if (window.dreamMonitor) {
+                    dreamMonitor.trackEvent('install_accepted');
+                }
+            } else {
+                if (window.dreamMonitor) {
+                    dreamMonitor.trackEvent('install_declined');
+                }
+            }
+            
+            deferredPrompt = null;
+            hideBanner();
+        }
+        
+        function hideBanner() {
+            document.getElementById('installBanner').style.display = 'none';
+            localStorage.setItem('install_banner_hidden', 'true');
+        }
+        
+        // ==================== DEVICE DETECTION ====================
+        function detectDevice() {
+            const ua = navigator.userAgent;
+            const isMobile = /Mobi|Android/i.test(ua);
+            const isXiaomi = /Xiaomi|Redmi|Mi/i.test(ua);
+            const isHelioG85 = /mediatek|helio.*g85/i.test(ua);
+            const has8GB = navigator.deviceMemory >= 8;
+            
+            let deviceInfo = '📱 Unknown Device';
+            let badgeText = '';
+            
+            if (isXiaomi && isHelioG85 && has8GB) {
+                deviceInfo = '📱 Xiaomi Redmi Note 9 Pro (8GB/128GB)';
+                badgeText = '⚡ Helio G85 Optimized';
+                
+                // Apply optimizations
+                setTimeout(() => {
+                    if (typeof RedmiNote9ProMaxOptimizer !== 'undefined') {
+                        deviceOptimizer = new RedmiNote9ProMaxOptimizer();
+                    }
+                }, 1000);
+            } else if (isMobile) {
+                deviceInfo = `📱 Mobile Device (${navigator.platform})`;
+            }
+            
+            // Update UI
+            document.getElementById('deviceInfo').textContent = deviceInfo;
+            
+            if (badgeText) {
+                const badge = document.getElementById('deviceBadge');
+                badge.textContent = badgeText;
+                badge.style.display = 'block';
+            }
+            
+            return { isXiaomi, isHelioG85, has8GB };
+        }
+        
+        // ==================== SYSTEM INFO ====================
+        function showSystemInfo() {
+            const info = `
+DREAM OS v1.0 - System Information
+===================================
+URL: ${window.location.href}
+User Agent: ${navigator.userAgent}
+Platform: ${navigator.platform}
+RAM: ${navigator.deviceMemory || 'Unknown'} GB
+Cores: ${navigator.hardwareConcurrency}
+Screen: ${screen.width}x${screen.height}
+PWA: ${'serviceWorker' in navigator ? '✅' : '❌'}
+Offline: ${navigator.onLine ? 'Online' : 'Offline'}
+Storage: ${navigator.storage ? 'Available' : 'N/A'}
+Launch Time: ${new Date().toLocaleString('id-ID')}
+===================================
+Mode: ${localStorage.getItem('dreamos_mode') || 'Not logged in'}
+Session: ${localStorage.getItem('dreamos_logged_in') === 'true' ? 'Active' : 'Inactive'}
+            `;
+            
+            alert(info);
+        }
+        
+        // ==================== INITIALIZATION ====================
+        window.onload = async function() {
+            console.log('🕋 DREAM OS v1.0 - Bismillah Launch Initialized');
+            
+            // Add launch timestamp
+            if (!localStorage.getItem('dreamos_first_visit')) {
+                localStorage.setItem('dreamos_first_visit', new Date().toISOString());
+                localStorage.setItem('dreamos_launch_id', 'DREAM-' + Date.now());
+            }
+            
+            // Check fingerprint support
+            await checkFingerprintSupport();
+            
+            // Detect device
+            detectDevice();
+            
+            // Check PWA status
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+            if (isStandalone || window.navigator.standalone) {
+                document.getElementById('pwaStatus').innerHTML = 
+                    '✅ Running as installed app';
+                document.getElementById('pwaStatus').style.color = '#25D366';
+            } else {
+                document.getElementById('pwaStatus').innerHTML = 
+                    '🌐 Open in browser (Add to Home Screen for app experience)';
+            }
+            
+            // Check if returning user
+            const isLoggedIn = localStorage.getItem('dreamos_logged_in');
+            const loginTime = localStorage.getItem('dreamos_timestamp');
+            
+            if (isLoggedIn === 'true' && loginTime) {
+                const hoursSinceLogin = (Date.now() - parseInt(loginTime)) / (1000 * 60 * 60);
+                
+                if (hoursSinceLogin < 24) { // Session valid for 24 hours
+                    const savedMode = localStorage.getItem('dreamos_mode');
+                    if (savedMode) {
+                        document.getElementById('accessMode').value = savedMode;
+                        document.getElementById('password').placeholder = 
+                            'Session active, press login to continue';
+                        
+                        // Auto-focus login button
+                        setTimeout(() => {
+                            document.querySelector('.dream-btn.primary').focus();
+                        }, 500);
+                    }
+                } else {
+                    // Session expired
+                    localStorage.removeItem('dreamos_logged_in');
+                    localStorage.removeItem('dreamos_mode');
+                }
+            }
+            
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                try {
+                    await navigator.serviceWorker.register('/service-worker.js');
+                    console.log('✅ Service Worker registered');
+                    
+                    // Send launch event to SW
+                    navigator.serviceWorker.ready.then(registration => {
+                        registration.active.postMessage({
+                            type: 'LAUNCH_EVENT',
+                            data: {
+                                launchId: localStorage.getItem('dreamos_launch_id'),
+                                timestamp: new Date().toISOString()
+                            }
+                        });
+                    });
+                } catch (error) {
+                    console.log('❌ Service Worker registration failed:', error);
+                }
+            }
+            
+            // Initialize monitoring
+            if (typeof LaunchMonitor !== 'undefined') {
+                window.dreamMonitor = new LaunchMonitor();
+            }
+            
+            // Initialize security
+            if (typeof SecurityManager !== 'undefined') {
+                window.securityManager = new SecurityManager();
+            }
+            
+            // Play welcome sound (optional)
+            setTimeout(() => {
+                try {
+                    const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3');
+                    audio.volume = 0.3;
+                    audio.play();
+                } catch (e) {
+                    // Ignore audio errors
+                }
+            }, 1000);
+        };
+        
+        function saveCredentials() {
+            if (!navigator.credentials || !navigator.credentials.store) {
+                alert('Password saving not supported in this browser');
+                return;
+            }
+            
+            try {
+                const cred = new PasswordCredential({
+                    id: 'dreamos_user',
+                    name: 'DREAM OS User',
+                    password: document.getElementById('password').value,
+                    iconURL: 'icons/icon-192.png'
+                });
+                
+                navigator.credentials.store(cred);
+                alert('✅ Password saved to device credentials!');
+            } catch (error) {
+                alert('Failed to save password: ' + error.message);
+            }
+        }
+        
+        // ==================== KEYBOARD SHORTCUTS ====================
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Enter to login
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                login();
+            }
+            
+            // Ctrl/Cmd + I for system info
+            if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+                e.preventDefault();
+                showSystemInfo();
+            }
+            
+            // Escape to clear password
+            if (e.key === 'Escape') {
+                document.getElementById('password').value = '';
+            }
+        });
+        
+        // ==================== BEFORE UNLOAD ====================
+        window.addEventListener('beforeunload', () => {
+            // Save session state
+            if (window.dreamMonitor) {
+                const report = dreamMonitor.generateLaunchReport();
+                localStorage.setItem('last_session_report', JSON.stringify(report));
+            }
+        });
+    </script>
+</body>
+</html>
