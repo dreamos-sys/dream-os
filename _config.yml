@@ -1,0 +1,4 @@
+# File: _config.yml
+include: ["_*", "*.html", "*.js", "*.css"]
+exclude: []
+keep_files: ["_js", "_css", "_components"]
