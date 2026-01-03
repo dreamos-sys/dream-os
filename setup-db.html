@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream OS - Database Setup</title>
+    <style>
+        :root {
+            --primary: #0a0a2a;
+            --secondary: #00d4ff;
+            --success: #4CAF50;
+            --danger: #ff3860;
+            --warning: #FF9800;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--primary);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(0,212,255,0.2);
+        }
+        
+        h1 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background: var(--secondary);
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,212,255,0.3);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .output {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .success {
+            color: var(--success);
+        }
+        
+        .error {
+            color: var(--danger);
+        }
+        
+        .warning {
+            color: var(--warning);
+        }
+        
+        .info {
+            color: var(--secondary);
+        }
+        
+        .step {
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(0,212,255,0.05);
+            border-radius: 10px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .step h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--secondary);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌌 Dream OS Database Setup</h1>
+        <div class="subtitle">Setup database untuk SIF Al Fikri GA System</div>
+        
+        <div class="step">
+            <h3>🔧 Step 1: Setup Supabase Connection</h3>
+            <p>Pastikan URL dan API Key sudah benar:</p>
+            <div class="info">
+                URL: https://ywtypkgjvbjwhmapmygb.supabase.co<br>
+                Project ID: ywtypkgjvbjwhmapmygb
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>🚀 Step 2: Create Database Tables</h3>
+            <p>Buat semua tabel yang diperlukan:</p>
+            <div>
+                <button class="btn" onclick="createAllTables()">Create All Tables</button>
+                <button class="btn-warning" onclick="resetDatabase()">Reset Database</button>
+                <button class="btn-success" onclick="checkDatabase()">Check Status</button>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>📊 Step 3: Insert Sample Data</h3>
+            <p>Insert data awal (admin, facilities, inventory):</p>
+            <div>
+                <button class="btn" onclick="insertSampleData()">Insert Sample Data</button>
+                <button class="btn" onclick="insertAllData()">Insert All Data (Complete)</button>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>✅ Step 4: Verify & Test</h3>
+            <p>Verifikasi database sudah siap:</p>
+            <div>
+                <button class="btn-success" onclick="verifySetup()">Verify Setup</button>
+                <button class="btn" onclick="testConnection()">Test Connection</button>
+            </div>
+        </div>
+        
+        <div id="output" class="output">
+            <p>Click buttons above to setup database...</p>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 15px; background: rgba(255,152,0,0.1); border-radius: 10px;">
+            <h3 style="color: var(--warning);">⚠️ Important Notes:</h3>
+            <p style="margin-top: 10px; font-size: 14px;">
+                1. Run "Create All Tables" terlebih dahulu<br>
+                2. Kemudian "Insert Sample Data"<br>
+                3. Gunakan "Reset Database" hanya jika ingin mulai dari awal<br>
+                4. Default admin: admin@alfikri.sch.id / @dm1n_Sec2025
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_CONFIG = {
+            url: 'https://ywtypkgjvbjwhmapmygb.supabase.co',
+            key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3dHB5a2dqdmJqd2htYXBteWdiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjkxMjk5NywiZXhwIjoyMDgyNDg4OTk3fQ._MA78j8WLwOO9nxR36tikN7jBQLjbYWYvTZn___eXBkk'
+        };
+        
+        let output = document.getElementById('output');
+        
+        function log(message, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            output.innerHTML += `<div class="${type}">[${time}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearLog() {
+            output.innerHTML = '';
+        }
+        
+        async function executeSQL(sql) {
+            try {
+                log(`Executing SQL...`, 'info');
+                
+                const response = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_CONFIG.key,
+                        'Authorization': `Bearer ${SUPABASE_CONFIG.key}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ query: sql })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    log(`✅ SQL executed successfully`, 'success');
+                    return { success: true, data: result };
+                } else {
+                    const error = await response.text();
+                    log(`❌ SQL Error: ${error}`, 'error');
+                    return { success: false, error: error };
+                }
+            } catch (err) {
+                log(`❌ Network Error: ${err.message}`, 'error');
+                return { success: false, error: err.message };
+            }
+        }
+        
+        async function createAllTables() {
+            clearLog();
+            log('Creating all tables...', 'warning');
+            
+            const sql = `
+                -- Create users table
+                CREATE TABLE IF NOT EXISTS users (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    password_hash VARCHAR(255) NOT NULL,
+                    name VARCHAR(100) NOT NULL,
+                    role VARCHAR(20) DEFAULT 'user',
+                    phone VARCHAR(20),
+                    created_at TIMESTAMP DEFAULT NOW(),
+                    is_active BOOLEAN DEFAULT TRUE
+                );
+                
+                -- Create facilities table
+                CREATE TABLE IF NOT EXISTS facilities (
+                    id VARCHAR(20) PRIMARY KEY,
+                    name VARCHAR(100) NOT NULL,
+                    capacity INTEGER NOT NULL,
+                    equipment TEXT[] DEFAULT ARRAY[]::TEXT[],
+                    status VARCHAR(20) DEFAULT 'available',
+                    notes TEXT
+                );
+                
+                -- Create bookings table
+                CREATE TABLE IF NOT EXISTS bookings (
+                    id VARCHAR(20) PRIMARY KEY,
+                    user_id UUID REFERENCES users(id),
+                    facility_id VARCHAR(20) REFERENCES facilities(id),
+                    booking_date DATE NOT NULL,
+                    start_time TIME NOT NULL,
+                    end_time TIME NOT NULL,
+                    participants INTEGER NOT NULL,
+                    purpose TEXT NOT NULL,
+                    status VARCHAR(20) DEFAULT 'pending',
+                    equipment_needs TEXT[] DEFAULT ARRAY[]::TEXT[],
+                    created_at TIMESTAMP DEFAULT NOW()
+                );
+                
+                -- Create k3_reports table
+                CREATE TABLE IF NOT EXISTS k3_reports (
+                    id VARCHAR(20) PRIMARY KEY,
+                    reporter_name VARCHAR(100) NOT NULL,
+                    reporter_phone VARCHAR(20) NOT NULL,
+                    report_type VARCHAR(50) NOT NULL,
+                    location VARCHAR(100) NOT NULL,
+                    description TEXT NOT NULL,
+                    urgency VARCHAR(20) DEFAULT 'medium',
+                    status VARCHAR(20) DEFAULT 'open',
+                    created_at TIMESTAMP DEFAULT NOW()
+                );
+                
+                -- Create inventory table
+                CREATE TABLE IF NOT EXISTS inventory (
+                    id VARCHAR(50) PRIMARY KEY,
+                    name VARCHAR(100) NOT NULL,
+                    category VARCHAR(50),
+                    quantity INTEGER DEFAULT 0,
+                    available INTEGER DEFAULT 0,
+                    status VARCHAR(20) DEFAULT 'available'
+                );
+            `;
+            
+            const result = await executeSQL(sql);
+            if (result.success) {
+                log('✅ All tables created successfully!', 'success');
+            }
+        }
+        
+        async function insertSampleData() {
+            clearLog();
+            log('Inserting sample data...', 'warning');
+            
+            const sql = `
+                -- Insert admin user
+                INSERT INTO users (email, password_hash, name, role, phone, is_active) 
+                VALUES (
+                    'admin@alfikri.sch.id',
+                    '$2a$10$Xp8wDqG7bKL2Q9m5V4hQeOcJkLmNoPqRsT.uVwYzA1B2C3D4E5F6G7H8I9J0K',
+                    'Administrator System',
+                    'super_admin',
+                    '08886183954',
+                    TRUE
+                )
+                ON CONFLICT (email) DO UPDATE SET
+                    password_hash = EXCLUDED.password_hash,
+                    role = EXCLUDED.role,
+                    name = EXCLUDED.name;
+                
+                -- Insert facilities
+                INSERT INTO facilities (id, name, capacity, equipment, status, notes) VALUES
+                ('AULA_SMP', 'Aula SMP', 200, ARRAY['sound', 'lighting', 'ac', 'projector'], 'available', 'Include sound, lighting, AC, projector'),
+                ('AULA_SMA', 'Aula SMA', 150, ARRAY['sound', 'projector'], 'available', 'Include sound, projector'),
+                ('MASJID', 'Masjid', 300, ARRAY['sound'], 'maintenance', 'MAINTENANCE/RENOVASI - Tidak bisa digunakan')
+                ON CONFLICT (id) DO UPDATE SET
+                    name = EXCLUDED.name,
+                    capacity = EXCLUDED.capacity,
+                    equipment = EXCLUDED.equipment,
+                    status = EXCLUDED.status;
+                
+                -- Insert inventory
+                INSERT INTO inventory (id, name, category, quantity, available, status) VALUES
+                ('sound-portable', 'Sound Portable', 'audio', 8, 6, 'available'),
+                ('projector', 'Projector', 'visual', 12, 10, 'available')
+                ON CONFLICT (id) DO UPDATE SET
+                    name = EXCLUDED.name,
+                    quantity = EXCLUDED.quantity,
+                    available = EXCLUDED.available;
+            `;
+            
+            const result = await executeSQL(sql);
+            if (result.success) {
+                log('✅ Sample data inserted successfully!', 'success');
+            }
+        }
+        
+        async function insertAllData() {
+            clearLog();
+            log('Inserting complete dataset...', 'warning');
+            
+            // First create tables
+            await createAllTables();
+            
+            // Then insert all data
+            const sql = `
+                -- Insert all facilities (18 items)
+                INSERT INTO facilities (id, name, capacity, equipment, status, notes) VALUES
+                ('AULA_SMP', 'Aula SMP', 200, ARRAY['sound', 'lighting', 'ac', 'projector'], 'available', 'Include sound, lighting, AC, projector'),
+                ('AULA_SMA', 'Aula SMA', 150, ARRAY['sound', 'projector'], 'available', 'Include sound, projector'),
+                ('SAUNG_BESAR', 'Saung Besar', 100, ARRAY['sound'], 'available', 'Include sound'),
+                ('SAUNG_KECIL', 'Saung Kecil', 50, ARRAY[]::TEXT[], 'available', 'Fasilitas dasar'),
+                ('MASJID', 'Masjid', 300, ARRAY['sound'], 'maintenance', 'MAINTENANCE/RENOVASI - Tidak bisa digunakan'),
+                ('SERBAGUNA', 'Serbaguna', 120, ARRAY['sound'], 'available', 'Include sound'),
+                ('LABKOM_SD', 'Labkom SD', 30, ARRAY['komputer', 'ac', 'wifi'], 'available', 'Lab komputer SD'),
+                ('LABKOM_SMP', 'Labkom SMP', 40, ARRAY['komputer', 'projector', 'ac', 'wifi'], 'available', 'Lab komputer SMP'),
+                ('LABKOM_SMA', 'Labkom SMA', 45, ARRAY['komputer', 'projector', 'ac', 'wifi'], 'available', 'Lab komputer SMA'),
+                ('VOLI', 'Lapangan Volley', 50, ARRAY['jaring', 'bola'], 'available', 'Lapangan voli outdoor'),
+                ('BASKET', 'Lapangan Basket', 40, ARRAY['ring', 'bola'], 'available', 'Lapangan basket'),
+                ('LAP_SMA', 'Lapangan SMA', 100, ARRAY[]::TEXT[], 'available', 'Lapangan serbaguna SMA'),
+                ('LAP_TANAH', 'Lapangan Tanah', 150, ARRAY[]::TEXT[], 'available', 'Lapangan tanah serbaguna'),
+                ('KANTIN_SMP', 'Kantin SMP', 80, ARRAY['meja', 'kursi'], 'available', 'Area makan SMP'),
+                ('KANTIN_SMA', 'Kantin SMA', 80, ARRAY['meja', 'kursi'], 'available', 'Area makan SMA'),
+                ('PERPUS_SD', 'Perpus SD', 40, ARRAY['buku', 'meja', 'kursi', 'ac'], 'available', 'Perpustakaan SD'),
+                ('PERPUS_SMP', 'Perpus SMP', 50, ARRAY['buku', 'meja', 'kursi', 'ac', 'wifi'], 'available', 'Perpustakaan SMP'),
+                ('PERPUS_SMA', 'Perpus SMA', 60, ARRAY['buku', 'meja', 'kursi', 'ac', 'wifi'], 'available', 'Perpustakaan SMA')
+                ON CONFLICT (id) DO UPDATE SET
+                    name = EXCLUDED.name,
+                    capacity = EXCLUDED.capacity,
+                    equipment = EXCLUDED.equipment,
+                    status = EXCLUDED.status;
+                
+                -- Insert all inventory items (12 items)
+                INSERT INTO inventory (id, name, category, quantity, available, status) VALUES
+                ('sound-portable', 'Sound Portable', 'audio', 8, 6, 'available'),
+                ('projector', 'Projector', 'visual', 12, 10, 'available'),
+                ('mic-standing', 'Mic Standing', 'audio', 6, 4, 'available'),
+                ('meja-panjang', 'Meja Panjang', 'furniture', 25, 20, 'available'),
+                ('meja-siswa', 'Meja Siswa', 'furniture', 50, 45, 'available'),
+                ('meja-oshin', 'Meja Oshin', 'furniture', 15, 12, 'available'),
+                ('kursi-futura', 'Kursi Futura', 'furniture', 200, 180, 'available'),
+                ('kursi-chitose', 'Kursi Chitose', 'furniture', 150, 130, 'available'),
+                ('kursi-siswa', 'Kursi Siswa', 'furniture', 300, 280, 'available'),
+                ('kabel-hdmi', 'Kabel HDMI', 'kabel', 20, 18, 'available'),
+                ('kabel-vga', 'Kabel VGA', 'kabel', 15, 12, 'available'),
+                ('kabel-rol', 'Kabel Rol AC', 'kabel', 30, 25, 'available')
+                ON CONFLICT (id) DO UPDATE SET
+                    name = EXCLUDED.name,
+                    category = EXCLUDED.category,
+                    quantity = EXCLUDED.quantity,
+                    available = EXCLUDED.available;
+            `;
+            
+            const result = await executeSQL(sql);
+            if (result.success) {
+                log('✅ Complete dataset inserted!', 'success');
+            }
+        }
+        
+        async function resetDatabase() {
+            if (!confirm('⚠️ WARNING: This will DELETE ALL DATA and recreate tables. Continue?')) {
+                return;
+            }
+            
+            clearLog();
+            log('Resetting database...', 'warning');
+            
+            const sql = `
+                -- Drop all tables in correct order
+                DROP TABLE IF EXISTS bookings CASCADE;
+                DROP TABLE IF EXISTS k3_reports CASCADE;
+                DROP TABLE IF EXISTS inventory CASCADE;
+                DROP TABLE IF EXISTS facilities CASCADE;
+                DROP TABLE IF EXISTS users CASCADE;
+            `;
+            
+            const result = await executeSQL(sql);
+            if (result.success) {
+                log('✅ Database reset complete!', 'success');
+                log('Now you can create tables again.', 'info');
+            }
+        }
+        
+        async function checkDatabase() {
+            clearLog();
+            log('Checking database status...', 'warning');
+            
+            // Simple test query
+            const sql = `SELECT 1 as test`;
+            
+            const result = await executeSQL(sql);
+            if (result.success) {
+                log('✅ Database connection OK', 'success');
+                
+                // Try to count users
+                const countSql = `SELECT COUNT(*) as user_count FROM users`;
+                const countResult = await executeSQL(countSql);
+                
+                if (countResult.success && countResult.data) {
+                    log(`📊 Users table has ${countResult.data[0]?.user_count || 0} records`, 'info');
+                }
+            }
+        }
+        
+        async function verifySetup() {
+            clearLog();
+            log('Verifying database setup...', 'warning');
+            
+            const tables = ['users', 'facilities', 'bookings', 'k3_reports', 'inventory'];
+            let allOk = true;
+            
+            for (const table of tables) {
+                const sql = `SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = '${table}')`;
+                const result = await executeSQL(sql);
+                
+                if (result.success && result.data && result.data[0]?.exists) {
+                    log(`✅ Table ${table} exists`, 'success');
+                } else {
+                    log(`❌ Table ${table} missing`, 'error');
+                    allOk = false;
+                }
+            }
+            
+            if (allOk) {
+                log('🎉 Database setup verified successfully!', 'success');
+                log('Dream OS is ready to use!', 'success');
+            } else {
+                log('⚠️ Some tables are missing. Please run "Create All Tables"', 'warning');
+            }
+        }
+        
+        async function testConnection() {
+            clearLog();
+            log('Testing Supabase connection...', 'warning');
+            
+            try {
+                const response = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/`, {
+                    headers: {
+                        'apikey': SUPABASE_CONFIG.key
+                    }
+                });
+                
+                if (response.ok) {
+                    log('✅ Supabase connection successful!', 'success');
+                } else {
+                    log('❌ Failed to connect to Supabase', 'error');
+                }
+            } catch (err) {
+                log(`❌ Connection error: ${err.message}`, 'error');
+            }
+        }
+        
+        // Initialize
+        log('Dream OS Database Setup Tool Ready', 'info');
+        log(`Supabase URL: ${SUPABASE_CONFIG.url}`, 'info');
+    </script>
+</body>
+</html>
