@@ -1,0 +1,28 @@
+{
+  "name": "𝓓 DREAM OS",
+  "short_name": "DREAM OS",
+  "description": "Al Fikri School Management System",
+  "theme_color": "#075E54",
+  "background_color": "#075E54",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
