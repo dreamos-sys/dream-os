@@ -1,0 +1,184 @@
+:root {
+    --dream-primary: #075E54;
+    --dream-secondary: #25D366;
+    --dream-accent: #FFD700;
+    --dream-dark: #128C7E;
+    --dream-light: #DCF8C6;
+    --dream-gray: #ECE5DD;
+    --dream-danger: #FF3860;
+    --dream-warning: #FFDD57;
+    --dream-success: #23D160;
+    --dream-info: #209CEE;
+    
+    --dream-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    --dream-shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+    --dream-radius: 10px;
+}
+
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--dream-primary);
+    margin-bottom: 1rem;
+}
+
+/* Buttons */
+.dream-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background: var(--dream-primary);
+    color: white;
+    border: none;
+    border-radius: var(--dream-radius);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 8px;
+}
+
+.dream-btn:hover {
+    background: var(--dream-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--dream-shadow);
+}
+
+.dream-btn.primary {
+    background: linear-gradient(45deg, var(--dream-primary), var(--dream-secondary));
+}
+
+.dream-btn.secondary {
+    background: white;
+    color: var(--dream-primary);
+    border: 2px solid var(--dream-primary);
+}
+
+.dream-btn.warning {
+    background: var(--dream-warning);
+    color: #000;
+}
+
+.dream-btn.danger {
+    background: var(--dream-danger);
+    color: white;
+}
+
+.dream-btn.small {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Cards */
+.dream-card {
+    background: white;
+    border-radius: var(--dream-radius);
+    padding: 20px;
+    box-shadow: var(--dream-shadow);
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+}
+
+/* Forms */
+.dream-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: var(--dream-radius);
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.dream-input:focus {
+    outline: none;
+    border-color: var(--dream-primary);
+    box-shadow: 0 0 0 3px rgba(7, 94, 84, 0.1);
+}
+
+.dream-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: var(--dream-radius);
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+}
+
+.dream-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: var(--dream-radius);
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Grids */
+.dream-grid {
+    display: grid;
+    gap: 20px;
+}
+
+/* Flex */
+.dream-flex {
+    display: flex;
+    align-items: center;
+}
+
+/* Badges */
+.dream-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dream-badge.success {
+    background: var(--dream-success);
+    color: white;
+}
+
+.dream-badge.warning {
+    background: var(--dream-warning);
+    color: black;
+}
+
+.dream-badge.danger {
+    background: var(--dream-danger);
+    color: white;
+}
+
+/* Utilities */
+.ml-2 { margin-left: 10px; }
+.mt-2 { margin-top: 10px; }
+.mb-2 { margin-bottom: 10px; }
+.p-4 { padding: 20px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dream-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dream-btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
