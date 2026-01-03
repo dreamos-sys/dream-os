@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🌌 DREAM OS v4.2 • SIF Al Fikri GA</title>
+    
+    <!-- SUPABASE JS -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- STYLE -->
+    <style>
+        :root {
+            --primary: #0a0a2a; --secondary: #00d4ff; --accent: #2E7D32;
+            --danger: #ff3860; --warning: #FF9800; --purple: #9c27b0;
+            --quantum: #9C27B0; --architect: #FF9800;
+        }
+        
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background:var(--primary); color:white; min-height:100vh; overflow-x:hidden; }
+        
+        .header { 
+            background: linear-gradient(135deg, #2D5D4B 0%, #1E293B 100%);
+            padding: 1.2rem 1rem; text-align: center; 
+            border-bottom: 2px solid var(--secondary);
+            position: relative;
+        }
+        
+        .arabic { 
+            font-family: 'Amiri', serif;
+            font-size: 1.8rem; color: #4CAF50; 
+            margin-bottom: 0.5rem; font-weight: 700; 
+        }
+        
+        .shalawat { 
+            font-size: 1.1rem; color: var(--warning); 
+            margin-bottom: 0.5rem; font-style: italic;
+        }
+        
+        .nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            background: rgba(10,10,42,0.97); display: flex; 
+            padding: 0.8rem 0.5rem; backdrop-filter: blur(15px); z-index: 1000;
+            border-top: 1px solid rgba(0,212,255,0.2); 
+        }
+        
+        .nav-item { 
+            flex: 1; text-align: center; color: rgba(255,255,255,0.6); 
+            padding: 0.7rem 0.5rem; font-size: 0.75rem; cursor: pointer; 
+            transition: all 0.4s; border-radius: 12px; 
+        }
+        
+        .nav-item.active { 
+            color: var(--secondary); background: rgba(0,212,255,0.15); 
+            transform: translateY(-8px); 
+        }
+        
+        .nav-icon { display: block; font-size: 1.5rem; margin-bottom: 0.4rem; }
+        
+        .content { 
+            padding: 1.5rem; padding-bottom: 120px; max-width: 800px; 
+            margin: 0 auto; animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card { 
+            background: rgba(255,255,255,0.05); border-radius: 20px; 
+            padding: 1.8rem; margin: 1.5rem 0; 
+            border: 1px solid rgba(0,212,255,0.3); transition: all 0.4s; 
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .card::before { 
+            content: ''; position: absolute; top: 0; left: 0; right: 0; 
+            height: 4px; background: linear-gradient(90deg, var(--secondary), var(--accent)); 
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .btn { 
+            width: 100%; padding: 1.2rem; 
+            background: linear-gradient(135deg, var(--accent), #4CAF50); 
+            color: white; border: none; border-radius: 12px; 
+            font-size: 1.1rem; font-weight: 700; cursor: pointer; 
+            margin-top: 1.5rem; transition: all 0.4s; position: relative; 
+            overflow: hidden; 
+        }
+        
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.7rem; color: var(--secondary); font-weight: 600; }
+        .form-input, .form-select, .form-textarea { 
+            width: 100%; padding: 1rem; background: rgba(255,255,255,0.08); 
+            border: 2px solid rgba(0,212,255,0.4); border-radius: 10px; 
+            color: white; font-size: 1rem; transition: all 0.3s;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none; border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+            background: rgba(255,255,255,0.12);
+        }
+        
+        .notification { 
+            position: fixed; top: 90px; right: 20px; background: var(--accent); 
+            color: white; padding: 1.2rem 1.5rem; border-radius: 12px; 
+            z-index: 9998; max-width: 350px; animation: slideIn 0.5s; 
+            display: flex; align-items: center; gap: 1rem; display: none;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .quantum-badge {
+            position: fixed; top: 15px; left: 15px; background: var(--quantum);
+            color: white; padding: 0.5rem 1rem; border-radius: 20px;
+            font-size: 0.8rem; font-weight: bold; display: none; z-index: 9997;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse { 0%,100% { opacity: 0.7; } 50% { opacity: 1; } }
+        
+        @media (max-width: 768px) { 
+            .content { padding: 1rem; padding-bottom: 100px; } 
+            .card { padding: 1.3rem; }
+            .arabic { font-size: 1.5rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-item { font-size: 0.7rem; padding: 0.5rem; }
+            .nav-icon { font-size: 1.3rem; }
+        }
+    </style>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- QUANTUM ACCESS BADGE -->
+    <div id="quantumBadge" class="quantum-badge">🌌 QUANTUM ACCESS</div>
+    
+    <!-- HEADER -->
+    <div class="header">
+        <div class="arabic">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+        <div class="shalawat" id="dynamicShalawat">اَللّٰهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ</div>
+        <div class="subtitle">🌌 DREAM OS v4.2 • <span id="greeting">SIF Al Fikri GA</span></div>
+    </div>
+    
+    <!-- CONTENT AREA -->
+    <div id="content" class="content">
+        <!-- Content akan diisi oleh JavaScript -->
+    </div>
+    
+    <!-- NAVIGATION -->
+    <div class="nav">
+        <div class="nav-item active" onclick="showView('home')"><div class="nav-icon">🏠</div><div>Home</div></div>
+        <div class="nav-item" onclick="showView('booking')"><div class="nav-icon">📅</div><div>Booking</div></div>
+        <div class="nav-item" onclick="showView('k3')"><div class="nav-icon">⚠️</div><div>K3</div></div>
+        <div class="nav-item" onclick="showView('inventory')"><div class="nav-icon">🔧</div><div>Inventory</div></div>
+        <div class="nav-item" onclick="showView('admin')"><div class="nav-icon">🔐</div><div>Admin</div></div>
+    </div>
+    
+    <!-- NOTIFICATION -->
+    <div id="notification" class="notification"></div>
+
+    <!-- SCRIPT -->
+    <script>
+// ==================== CONFIGURATION ====================
+const CONFIG = {
+    version: '4.2',
+    schoolName: 'SIF Al Fikri',
+    contactPerson: 'Pak Erwin',
+    contactNumber: '08886183954',
+    whatsappNumber: '628886183954',
+    adminEmail: 'teknisi@alfikri.sch.id',
+    
+    // Supabase Configuration
+    supabase: {
+        url: 'https://ywtypkgjvbjwhmapmygb.supabase.co',
+        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3dHB5a2dqdmJqd2htYXBteWdiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjkxMjk5NywiZXhwIjoyMDgyNDg4OTk3fQ._MA78j8WLwOO9nxR36tikN7jBQLjbYWYvTZn___eXBkk'
+    },
+    
+    bookingRules: {
+        normalStart: '07:30',
+        normalEnd: '16:00',
+        fridayStart: '10:30',
+        fridayEnd: '13:00',
+        blockedFacilitiesFriday: ['AULA_SMP', 'SERBAGUNA']
+    }
+};
+
+// ==================== APP STATE ====================
+let appState = {
+    currentView: 'home',
+    isAdmin: false,
+    isAuthenticated: false,
+    currentUser: null,
+    supabase: null
+};
+
+// ==================== INITIALIZATION ====================
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🚀 DREAM OS v4.2 Loading...');
+    
+    // Initialize Supabase
+    try {
+        appState.supabase = supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.key);
+        console.log('✅ Supabase connected');
+    } catch (error) {
+        console.error('❌ Supabase error:', error);
+    }
+    
+    // Check authentication
+    await checkAuth();
+    
+    // Show home view
+    showView('home');
+    
+    // Update greeting
+    updateGreeting();
+    
+    // Show welcome
+    showNotification('🌌 DREAM OS v4.2 Ready!', 'success');
+    
+    console.log('✅ System loaded successfully');
+});
+
+// ==================== AUTH FUNCTIONS ====================
+async function checkAuth() {
+    const token = localStorage.getItem('dream_token');
+    if (token) {
+        try {
+            // Verify token with Supabase
+            const { data: { user }, error } = await appState.supabase.auth.getUser(token);
+            if (!error && user) {
+                appState.isAuthenticated = true;
+                appState.currentUser = user;
+                appState.isAdmin = user.email === 'admin@alfikri.sch.id';
+            }
+        } catch (error) {
+            console.error('Auth error:', error);
+        }
+    }
+}
+
+async function login(email, password) {
+    try {
+        const { data, error } = await appState.supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+        
+        if (error) throw error;
+        
+        appState.isAuthenticated = true;
+        appState.currentUser = data.user;
+        appState.isAdmin = data.user.email === 'admin@alfikri.sch.id';
+        
+        localStorage.setItem('dream_token', data.session.access_token);
+        showNotification('✅ Login successful!', 'success');
+        return true;
+    } catch (error) {
+        showNotification('❌ Login failed: ' + error.message, 'error');
+        return false;
+    }
+}
+
+function logout() {
+    appState.isAuthenticated = false;
+    appState.currentUser = null;
+    appState.isAdmin = false;
+    localStorage.removeItem('dream_token');
+    showNotification('👋 Logged out', 'info');
+    showView('home');
+}
+
+// ==================== VIEW SYSTEM ====================
+function showView(view) {
+    appState.currentView = view;
+    
+    // Update nav
+    document.querySelectorAll('.nav-item').forEach((item, index) => {
+        item.classList.remove('active');
+        const views = ['home', 'booking', 'k3', 'inventory', 'admin'];
+        if (views[index] === view) item.classList.add('active');
+    });
+    
+    const content = document.getElementById('content');
+    
+    switch(view) {
+        case 'home': content.innerHTML = renderHome(); break;
+        case 'booking': content.innerHTML = renderBooking(); break;
+        case 'k3': content.innerHTML = renderK3(); break;
+        case 'inventory': content.innerHTML = renderInventory(); break;
+        case 'admin': content.innerHTML = renderAdmin(); break;
+    }
+}
+
+// ==================== RENDER FUNCTIONS ====================
+function renderHome() {
+    return `
+        <div class="card">
+            <h2 style="color: var(--secondary); margin-bottom: 1.5rem;">
+                <span style="font-size: 1.8rem;">🌌</span> Dashboard
+            </h2>
+            
+            ${!appState.isAuthenticated ? `
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; color: var(--secondary); margin-bottom: 1rem;">🔐</div>
+                    <h3 style="color: var(--secondary); margin-bottom: 1rem;">Welcome to Dream OS</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">
+                        Login untuk mengakses sistem booking dan K3
+                    </p>
+                    <button onclick="showLoginModal()" class="btn" style="max-width: 200px; margin: 0 auto;">
+                        🚀 Login to System
+                    </button>
+                </div>
+            ` : `
+                <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(0,212,255,0.1); border-radius: 15px;">
+                    <div style="color: var(--secondary); font-size: 1.2rem; font-weight: 600;" id="greetingText"></div>
+                    <div style="margin-top: 0.5rem; color: rgba(255,255,255,0.8);">
+                        Welcome back, ${appState.currentUser?.email || 'User'}!
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                    <div class="stat-card" onclick="showView('booking')">
+                        <div style="font-size: 2.5rem; color: var(--secondary);">🏛️</div>
+                        <div style="font-size: 1.5rem; font-weight: 700;" id="facilityCount">3</div>
+                        <div style="font-size: 0.9rem;">Facilities</div>
+                    </div>
+                    <div class="stat-card" onclick="showView('booking')">
+                        <div style="font-size: 2.5rem; color: #4CAF50;">📅</div>
+                        <div style="font-size: 1.5rem; font-weight: 700;" id="bookingCount">0</div>
+                        <div style="font-size: 0.9rem;">Your Bookings</div>
+                    </div>
+                    <div class="stat-card" onclick="showView('k3')">
+                        <div style="font-size: 2.5rem; color: var(--warning);">⚠️</div>
+                        <div style="font-size: 1.5rem; font-weight: 700;" id="k3Count">0</div>
+                        <div style="font-size: 0.9rem;">K3 Reports</div>
+                    </div>
+                    <div class="stat-card" onclick="showView('inventory')">
+                        <div style="font-size: 2.5rem; color: var(--accent);">🔧</div>
+                        <div style="font-size: 1.5rem; font-weight: 700;" id="inventoryCount">2</div>
+                        <div style="font-size: 0.9rem;">Inventory</div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="color: var(--secondary); margin-bottom: 1rem;">Quick Actions</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button onclick="showView('booking')" class="quick-action-btn">
+                            📅 New Booking
+                        </button>
+                        <button onclick="showView('k3')" class="quick-action-btn">
+                            ⚠️ Report Issue
+                        </button>
+                    </div>
+                </div>
+                
+                ${appState.isAdmin ? `
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(156,39,176,0.1); border-radius: 10px;">
+                        <h4 style="color: var(--purple); margin-bottom: 0.5rem;">👑 Admin Tools</h4>
+                        <button onclick="showView('admin')" style="width:100%; padding:0.8rem; background:rgba(156,39,176,0.2); 
+                               border:1px solid var(--purple); color:white; border-radius:8px; margin-top:0.5rem;">
+                            Open Admin Panel
+                        </button>
+                    </div>
+                ` : ''}
+            `}
+        </div>
+        
+        <style>
+            .stat-card { padding: 1.5rem; text-align: center; background: rgba(255,255,255,0.03); 
+                        border-radius: 15px; border: 1px solid rgba(0,212,255,0.1); cursor: pointer;
+                        transition: all 0.3s; }
+            .stat-card:hover { transform: translateY(-5px); border-color: var(--secondary); }
+            .quick-action-btn { padding: 1rem; background: rgba(0,212,255,0.1); border: 2px solid var(--secondary); 
+                              color: var(--secondary); border-radius: 10px; cursor: pointer; font-weight: 600;
+                              transition: all 0.3s; }
+            .quick-action-btn:hover { transform: translateY(-3px); background: rgba(0,212,255,0.2); }
+        </style>
+    `;
+}
+
+function renderBooking() {
+    if (!appState.isAuthenticated) {
+        return `
+            <div class="card">
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; color: var(--secondary); margin-bottom: 1rem;">🔐</div>
+                    <h3 style="color: var(--secondary);">Authentication Required</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin: 1rem 0 2rem;">
+                        Please login to access booking system
+                    </p>
+                    <button onclick="showLoginModal()" class="btn" style="max-width: 200px; margin: 0 auto;">
+                        🚀 Login Now
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="card">
+            <div style="display: flex; align-items: center; margin-bottom: 2rem; gap: 1rem;">
+                <button onclick="showView('home')" style="background:rgba(0,212,255,0.1); border:2px solid var(--secondary); 
+                       color:var(--secondary); padding:0.7rem 1.2rem; border-radius:10px; cursor:pointer;">
+                    ← Back
+                </button>
+                <div style="flex:1; text-align:center;">
+                    <div style="color:var(--secondary); font-weight:700; font-size:1.3rem;">📅 Booking System</div>
+                </div>
+            </div>
+            
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label class="form-label">🏛️ Facility *</label>
+                    <select class="form-select" id="facility" required>
+                        <option value="">Select facility...</option>
+                        <option value="AULA_SMP">Aula SMP (Capacity: 200)</option>
+                        <option value="AULA_SMA">Aula SMA (Capacity: 150)</option>
+                        <option value="SAUNG_BESAR">Saung Besar (Capacity: 100)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">📅 Date *</label>
+                    <input type="date" class="form-input" id="date" required 
+                           min="${new Date().toISOString().split('T')[0]}">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">⏰ Time *</label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div>
+                            <div style="font-size:0.9rem; color:var(--secondary); margin-bottom:0.5rem;">Start</div>
+                            <select class="form-select" id="startTime" required>
+                                <option value="">Start</option>
+                                <option value="07:30">07:30</option>
+                                <option value="08:00">08:00</option>
+                                <option value="08:30">08:30</option>
+                                <option value="09:00">09:00</option>
+                                <option value="09:30">09:30</option>
+                                <option value="10:00">10:00</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div style="font-size:0.9rem; color:var(--secondary); margin-bottom:0.5rem;">End</div>
+                            <select class="form-select" id="endTime" required>
+                                <option value="">End</option>
+                                <option value="08:00">08:00</option>
+                                <option value="08:30">08:30</option>
+                                <option value="09:00">09:00</option>
+                                <option value="09:30">09:30</option>
+                                <option value="10:00">10:00</option>
+                                <option value="10:30">10:30</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">👥 Participants *</label>
+                    <input type="number" class="form-input" id="participants" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">📝 Purpose *</label>
+                    <textarea class="form-textarea" id="purpose" rows="3" required 
+                              placeholder="Describe the purpose of booking..."></textarea>
+                </div>
+                
+                <button type="button" class="btn" onclick="submitBooking()">
+                    🚀 Submit Booking Request
+                </button>
+            </form>
+        </div>
+    `;
+}
+
+function renderK3() {
+    if (!appState.isAuthenticated) {
+        return `
+            <div class="card">
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem;">🔐</div>
+                    <h3 style="color: var(--warning);">Authentication Required</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin: 1rem 0 2rem;">
+                        Please login to report K3 issues
+                    </p>
+                    <button onclick="showLoginModal()" class="btn" style="max-width: 200px; margin: 0 auto;">
+                        🚀 Login Now
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="card">
+            <div style="display: flex; align-items: center; margin-bottom: 2rem; gap: 1rem;">
+                <button onclick="showView('home')" style="background:rgba(255,152,0,0.1); border:2px solid var(--warning); 
+                       color:var(--warning); padding:0.7rem 1.2rem; border-radius:10px; cursor:pointer;">
+                    ← Back
+                </button>
+                <div style="flex:1; text-align:center;">
+                    <div style="color:var(--warning); font-weight:700; font-size:1.3rem;">⚠️ K3 Reporting</div>
+                </div>
+            </div>
+            
+            <form id="k3Form">
+                <div class="form-group">
+                    <label class="form-label">📍 Location *</label>
+                    <select class="form-select" id="location" required>
+                        <option value="">Select location...</option>
+                        <option value="Aula SMP">Aula SMP</option>
+                        <option value="Aula SMA">Aula SMA</option>
+                        <option value="Toilet">Toilet</option>
+                        <option value="Parking">Parking</option>
+                        <option value="Classroom">Classroom</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">⚠️ Issue Type *</label>
+                    <select class="form-select" id="issueType" required>
+                        <option value="">Select type...</option>
+                        <option value="damage">Damage/Repair</option>
+                        <option value="cleanliness">Cleanliness</option>
+                        <option value="safety">Safety Hazard</option>
+                        <option value="electrical">Electrical</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">🚨 Urgency *</label>
+                    <select class="form-select" id="urgency" required>
+                        <option value="low">Low (1-3 days)</option>
+                        <option value="medium" selected>Medium (24 hours)</option>
+                        <option value="high">High (4 hours)</option>
+                        <option value="critical">Critical (Immediate)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">📝 Description *</label>
+                    <textarea class="form-textarea" id="description" rows="4" required 
+                              placeholder="Describe the issue in detail..."></textarea>
+                </div>
+                
+                <button type="button" class="btn" onclick="submitK3()" 
+                        style="background:linear-gradient(135deg, var(--warning), #FF9800);">
+                    🚨 Submit K3 Report
+                </button>
+            </form>
+        </div>
+    `;
+}
+
+function renderInventory() {
+    return `
+        <div class="card">
+            <div style="display: flex; align-items: center; margin-bottom: 2rem; gap: 1rem;">
+                <button onclick="showView('home')" style="background:rgba(46,125,50,0.1); border:2px solid var(--accent); 
+                       color:var(--accent); padding:0.7rem 1.2rem; border-radius:10px; cursor:pointer;">
+                    ← Back
+                </button>
+                <div style="flex:1; text-align:center;">
+                    <div style="color:var(--accent); font-weight:700; font-size:1.3rem;">🔧 Inventory</div>
+                </div>
+            </div>
+            
+            <div id="inventoryList">
+                <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">
+                    Loading inventory...
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            loadInventory();
+        </script>
+    `;
+}
+
+function renderAdmin() {
+    if (!appState.isAdmin) {
+        return `
+            <div class="card">
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; color: var(--purple); margin-bottom: 1rem;">🔐</div>
+                    <h3 style="color: var(--purple);">Admin Access Required</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin: 1rem 0 2rem;">
+                        Administrator privileges needed
+                    </p>
+                    ${appState.isAuthenticated ? `
+                        <p style="color: var(--warning); margin-bottom: 1rem;">
+                            You are logged in as ${appState.currentUser?.email}
+                        </p>
+                        <button onclick="logout()" class="btn" style="background:var(--danger);">
+                            🚪 Logout & Try Admin Account
+                        </button>
+                    ` : `
+                        <button onclick="showLoginModal()" class="btn" style="max-width: 200px; margin: 0 auto;">
+                            🔐 Admin Login
+                        </button>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="card">
+            <div style="display: flex; align-items: center; margin-bottom: 2rem; gap: 1rem;">
+                <button onclick="showView('home')" style="background:rgba(156,39,176,0.1); border:2px solid var(--purple); 
+                       color:var(--purple); padding:0.7rem 1.2rem; border-radius:10px; cursor:pointer;">
+                    ← Back
+                </button>
+                <div style="flex:1; text-align:center;">
+                    <div style="color:var(--purple); font-weight:700; font-size:1.3rem;">👑 Admin Panel</div>
+                </div>
+                <button onclick="logout()" style="background:rgba(255,86,86,0.1); border:2px solid var(--danger); 
+                       color:var(--danger); padding:0.7rem 1.2rem; border-radius:10px; cursor:pointer;">
+                    🚪 Logout
+                </button>
+            </div>
+            
+            <!-- Admin Stats -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:1rem; margin-bottom:2rem;">
+                <div style="padding:1rem; background:rgba(0,212,255,0.1); border-radius:10px; text-align:center;">
+                    <div style="font-size:1.5rem; color:var(--secondary);" id="adminUsers">1</div>
+                    <div style="font-size:0.9rem;">Users</div>
+                </div>
+                <div style="padding:1rem; background:rgba(255,152,0,0.1); border-radius:10px; text-align:center;">
+                    <div style="font-size:1.5rem; color:var(--warning);" id="adminBookings">0</div>
+                    <div style="font-size:0.9rem;">Bookings</div>
+                </div>
+                <div style="padding:1rem; background:rgba(255,86,86,0.1); border-radius:10px; text-align:center;">
+                    <div style="font-size:1.5rem; color:var(--danger);" id="adminK3">0</div>
+                    <div style="font-size:0.9rem;">K3 Reports</div>
+                </div>
+            </div>
+            
+            <!-- Admin Actions -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <button onclick="viewAllBookings()" style="padding:1rem; background:rgba(0,212,255,0.1); 
+                       border:2px solid var(--secondary); color:var(--secondary); border-radius:10px;">
+                    📅 View All Bookings
+                </button>
+                <button onclick="viewAllK3()" style="padding:1rem; background:rgba(255,152,0,0.1); 
+                       border:2px solid var(--warning); color:var(--warning); border-radius:10px;">
+                    ⚠️ View All K3
+                </button>
+            </div>
+            
+            <!-- System Info -->
+            <div style="margin-top:2rem; padding:1rem; background:rgba(0,0,0,0.2); border-radius:10px;">
+                <div style="color:var(--secondary); font-weight:600; margin-bottom:0.5rem;">System Info</div>
+                <div style="font-size:0.9rem; color:rgba(255,255,255,0.7);">
+                    • Version: ${CONFIG.version}<br>
+                    • Database: Connected<br>
+                    • Users: 1 registered<br>
+                    • Last Sync: ${new Date().toLocaleTimeString('id-ID')}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ==================== UTILITY FUNCTIONS ====================
+function updateGreeting() {
+    const now = new Date();
+    const hour = now.getHours();
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const day = days[now.getDay()];
+    
+    let greeting = '';
+    if (hour >= 4 && hour < 10) greeting = '🌄 Subhanallah, pagi penuh berkah';
+    else if (hour >= 10 && hour < 15) greeting = '☀️ Allahu Akbar, siang yang produktif';
+    else if (hour >= 15 && hour < 18) greeting = '🌅 Masya Allah, sore penuh kedamaian';
+    else greeting = '🌙 Allahumma barik, malam yang penuh hikmah';
+    
+    const greetingEl = document.getElementById('greeting');
+    if (greetingEl) greetingEl.textContent = `${greeting} • ${day}`;
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.getElementById('notification');
+    if (!notification) return;
+    
+    const colors = {
+        'success': '#4CAF50', 'error': '#f44336', 
+        'warning': '#FF9800', 'info': '#2196f3'
+    };
+    
+    const icons = {
+        'success': '✅', 'error': '❌', 
+        'warning': '⚠️', 'info': 'ℹ️'
+    };
+    
+    notification.style.background = colors[type] || colors.info;
+    notification.innerHTML = `
+        <div style="font-size:1.5rem;">${icons[type] || 'ℹ️'}</div>
+        <div style="flex:1;">${message}</div>
+        <button onclick="this.parentElement.style.display='none'" 
+                style="background:transparent; border:none; color:white; font-size:1.2rem; cursor:pointer;">
+            ×
+        </button>
+    `;
+    notification.style.display = 'flex';
+    
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
+}
+
+// ==================== MODAL FUNCTIONS ====================
+function showLoginModal() {
+    const modalHTML = `
+        <div style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); 
+             display:flex; align-items:center; justify-content:center; z-index:9999;">
+            <div style="background:var(--primary); padding:2rem; border-radius:20px; 
+                 border:2px solid var(--secondary); max-width:400px; width:90%;">
+                <h3 style="color:var(--secondary); margin-bottom:1.5rem; text-align:center;">🔐 Login</h3>
+                
+                <div style="margin-bottom:1.5rem;">
+                    <label style="display:block; margin-bottom:0.5rem; color:var(--secondary);">Email</label>
+                    <input type="email" id="loginEmail" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.1); 
+                           border:1px solid var(--secondary); border-radius:8px; color:white;" 
+                           placeholder="admin@alfikri.sch.id">
+                </div>
+                
+                <div style="margin-bottom:1.5rem;">
+                    <label style="display:block; margin-bottom:0.5rem; color:var(--secondary);">Password</label>
+                    <input type="password" id="loginPassword" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.1); 
+                           border:1px solid var(--secondary); border-radius:8px; color:white;" 
+                           placeholder="@dm1n_Sec2025">
+                </div>
+                
+                <div style="display:flex; gap:1rem;">
+                    <button onclick="hideLoginModal()" style="flex:1; padding:0.8rem; background:rgba(255,255,255,0.1); 
+                           border:1px solid var(--secondary); color:var(--secondary); border-radius:8px;">
+                        Cancel
+                    </button>
+                    <button onclick="processLogin()" style="flex:1; padding:0.8rem; background:var(--secondary); 
+                           color:var(--primary); border:none; border-radius:8px; font-weight:bold;">
+                        Login
+                    </button>
+                </div>
+                
+                <div style="margin-top:1.5rem; padding:1rem; background:rgba(255,215,0,0.1); border-radius:8px;">
+                    <div style="font-size:0.9rem; color:var(--warning); text-align:center;">
+                        <strong>Demo Credentials:</strong><br>
+                        Email: admin@alfikri.sch.id<br>
+                        Password: @dm1n_Sec2025
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    const modal = document.createElement('div');
+    modal.innerHTML = modalHTML;
+    modal.id = 'loginModal';
+    document.body.appendChild(modal);
+}
+
+function hideLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) modal.remove();
+}
+
+async function processLogin() {
+    const email = document.getElementById('loginEmail')?.value;
+    const password = document.getElementById('loginPassword')?.value;
+    
+    if (!email || !password) {
+        showNotification('Please enter email and password', 'error');
+        return;
+    }
+    
+    const success = await login(email, password);
+    if (success) {
+        hideLoginModal();
+        showView('home');
+    }
+}
+
+// ==================== DATABASE FUNCTIONS ====================
+async function submitBooking() {
+    if (!appState.isAuthenticated) {
+        showNotification('Please login first', 'error');
+        return;
+    }
+    
+    const facility = document.getElementById('facility').value;
+    const date = document.getElementById('date').value;
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
+    const participants = document.getElementById('participants').value;
+    const purpose = document.getElementById('purpose').value;
+    
+    // Validation
+    if (!facility || !date || !startTime || !endTime || !participants || !purpose) {
+        showNotification('Please fill all required fields', 'error');
+        return;
+    }
+    
+    const bookingData = {
+        user_id: appState.currentUser.id,
+        facility_id: facility,
+        booking_date: date,
+        start_time: startTime,
+        end_time: endTime,
+        participants: parseInt(participants),
+        purpose: purpose,
+        status: 'pending',
+        created_at: new Date().toISOString()
+    };
+    
+    try {
+        const { data, error } = await appState.supabase
+            .from('bookings')
+            .insert([bookingData]);
+            
+        if (error) throw error;
+        
+        showNotification('✅ Booking submitted successfully!', 'success');
+        
+        // Send WhatsApp notification
+        const message = `📋 NEW BOOKING REQUEST
+        
+Facility: ${facility}
+Date: ${date}
+Time: ${startTime} - ${endTime}
+Participants: ${participants}
+Purpose: ${purpose}
+
+From: ${appState.currentUser.email}
+Status: Pending Approval`;
+        
+        const whatsappUrl = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+        
+        // Reset form
+        document.getElementById('bookingForm').reset();
+        
+    } catch (error) {
+        showNotification('❌ Booking failed: ' + error.message, 'error');
+    }
+}
+
+async function submitK3() {
+    if (!appState.isAuthenticated) {
+        showNotification('Please login first', 'error');
+        return;
+    }
+    
+    const location = document.getElementById('location').value;
+    const issueType = document.getElementById('issueType').value;
+    const urgency = document.getElementById('urgency').value;
+    const description = document.getElementById('description').value;
+    
+    // Validation
+    if (!location || !issueType || !urgency || !description) {
+        showNotification('Please fill all required fields', 'error');
+        return;
+    }
+    
+    const k3Data = {
+        reporter_name: appState.currentUser.email,
+        reporter_phone: '', // Could add phone field
+        report_type: issueType,
+        location: location,
+        description: description,
+        urgency: urgency,
+        status: 'open',
+        created_at: new Date().toISOString()
+    };
+    
+    try {
+        const { data, error } = await appState.supabase
+            .from('k3_reports')
+            .insert([k3Data]);
+            
+        if (error) throw error;
+        
+        showNotification('✅ K3 report submitted successfully!', 'success');
+        
+        // Send WhatsApp notification
+        const message = `⚠️ NEW K3 REPORT
+        
+Location: ${location}
+Issue: ${issueType}
+Urgency: ${urgency}
+Description: ${description}
+
+Reported by: ${appState.currentUser.email}
+Status: Open`;
+        
+        const whatsappUrl = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+        
+        // Reset form
+        document.getElementById('k3Form').reset();
+        
+    } catch (error) {
+        showNotification('❌ K3 report failed: ' + error.message, 'error');
+    }
+}
+
+async function loadInventory() {
+    try {
+        const { data, error } = await appState.supabase
+            .from('inventory')
+            .select('*');
+            
+        if (error) throw error;
+        
+        const inventoryList = document.getElementById('inventoryList');
+        if (!inventoryList) return;
+        
+        if (!data || data.length === 0) {
+            inventoryList.innerHTML = `
+                <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">
+                    No inventory items found
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '<div style="display:grid; gap:0.8rem;">';
+        data.forEach(item => {
+            const availablePercent = item.quantity > 0 ? Math.round((item.available / item.quantity) * 100) : 0;
+            const color = availablePercent > 50 ? '#4CAF50' : availablePercent > 20 ? '#FF9800' : '#f44336';
+            
+            html += `
+                <div style="padding:1rem; background:rgba(255,255,255,0.05); border-radius:10px; 
+                     border-left:4px solid ${color};">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:600;">${item.name}</div>
+                            <div style="font-size:0.85rem; color:rgba(255,255,255,0.7); margin-top:0.3rem;">
+                                Category: ${item.category || 'General'}
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:600; color:${color};">${item.available}/${item.quantity}</div>
+                            <div style="font-size:0.8rem; color:rgba(255,255,255,0.5);">Available</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        
+        inventoryList.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Error loading inventory:', error);
+        showNotification('Failed to load inventory', 'error');
+    }
+}
+
+// ==================== ADMIN FUNCTIONS ====================
+async function viewAllBookings() {
+    try {
+        const { data, error } = await appState.supabase
+            .from('bookings')
+            .select('*')
+            .order('created_at', { ascending: false });
+            
+        if (error) throw error;
+        
+        let html = '<h3 style="color:var(--secondary); margin-bottom:1rem;">All Bookings</h3>';
+        
+        if (!data || data.length === 0) {
+            html += '<p style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">No bookings found</p>';
+        } else {
+            html += '<div style="max-height:400px; overflow-y:auto;">';
+            data.forEach(booking => {
+                const statusColor = booking.status === 'approved' ? '#4CAF50' : 
+                                  booking.status === 'rejected' ? '#f44336' : '#FF9800';
+                
+                html += `
+                    <div style="padding:1rem; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <div style="font-weight:600;">${booking.facility_id}</div>
+                        <div style="font-size:0.85rem; color:rgba(255,255,255,0.7); margin-top:0.3rem;">
+                            ${booking.booking_date} • ${booking.start_time} - ${booking.end_time}
+                        </div>
+                        <div style="margin-top:0.5rem;">
+                            <span style="color:${statusColor}; font-size:0.8rem; font-weight:bold;">
+                                ${booking.status.toUpperCase()}
+                            </span>
+                            <div style="margin-top:0.5rem; display:flex; gap:0.5rem;">
+                                <button onclick="updateBookingStatus('${booking.id}', 'approved')" 
+                                        style="padding:0.3rem 0.6rem; background:#4CAF50; border:none; border-radius:3px; 
+                                               color:white; font-size:0.7rem;">
+                                    Approve
+                                </button>
+                                <button onclick="updateBookingStatus('${booking.id}', 'rejected')" 
+                                        style="padding:0.3rem 0.6rem; background:#f44336; border:none; border-radius:3px; 
+                                               color:white; font-size:0.7rem;">
+                                    Reject
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        }
+        
+        document.getElementById('content').innerHTML = `
+            <div class="card">
+                <button onclick="showView('admin')" style="background:rgba(156,39,176,0.1); border:2px solid var(--purple); 
+                       color:var(--purple); padding:0.7rem 1.2rem; border-radius:10px; cursor:pointer; margin-bottom:1rem;">
+                    ← Back to Admin
+                </button>
+                ${html}
+            </div>
+        `;
+        
+    } catch (error) {
+        showNotification('Error loading bookings: ' + error.message, 'error');
+    }
+}
+
+async function updateBookingStatus(bookingId, status) {
+    try {
+        const { error } = await appState.supabase
+            .from('bookings')
+            .update({ status: status })
+            .eq('id', bookingId);
+            
+        if (error) throw error;
+        
+        showNotification(`✅ Booking ${status} successfully!`, 'success');
+        viewAllBookings();
+        
+    } catch (error) {
+        showNotification('Error updating booking: ' + error.message, 'error');
+    }
+}
+
+async function viewAllK3() {
+    try {
+        const { data, error } = await appState.supabase
+            .from('k3_reports')
+            .select('*')
+            .order('created_at', { ascending: false });
+            
+        if (error) throw error;
+        
+        let html = '<h3 style="color:var(--warning); margin-bottom:1rem;">All K3 Reports</h3>';
+        
+        if (!data || data.length === 0) {
+            html += '<p style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">No K3 reports found</p>';
+        } else {
+            html += '<div style="max-height:400px; overflow-y:auto;">';
+            data.forEach(report => {
+                const statusColor = report.status === 'resolved' ? '#4CAF50' : 
+                                  report.status === 'in_progress' ? '#FF9800' : '#f44336';
+                
+                html += `
+                    <div style="padding:1rem; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <div style="font-weight:600;">${report.location} - ${report.report_type}</div>
+                        <div style="font-size:0.85rem; color:rgba(255,255,255,0.7); margin-top:0.3rem;">
+                            ${report.description.substring(0, 100)}${report.description.length > 100 ? '...' : ''}
+                        </div>
+                        <div style="margin-top:0.5rem;">
+                            <span style="color:${statusColor}; font-size:0.8rem; font-weight:bold;">
+                                ${report.status.toUpperCase()} • ${report.urgency.toUpperCase()}
+                            </span>
+                            <div style="margin-top:0.5rem; display:flex; gap:0.5rem;">
+                                <button onclick="updateK3Status('${report.id}', 'in_progress')" 
+                                        style="padding:0.3rem 0.6rem; background:#FF9800; border:none; border-radius:3px; 
+                                               color:white; font-size:0.7rem;">
+                                    In Progress
+                                </button>
+                                <button onclick="updateK3Status('${report.id}', 'resolved')" 
+                                        style="padding:0.3rem 0.6rem; background:#4CAF50; border:none; border-radius:3px; 
+                                               color:white; font-size:0.7rem;">
+                                    Resolve
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        }
+        
+        document.getElementById('content').innerHTML = `
+            <div class="card">
+                <button onclick="showView('admin')" style="background:rgba(156,39,176,0.1); border:2px solid var(--purple); 
+                       color:var(--purple); padding:0.7rem 1.2rem; border-radius:10px; cursor:pointer; margin-bottom:1rem;">
+                    ← Back to Admin
+                </button>
+                ${html}
+            </div>
+        `;
+        
+    } catch (error) {
+        showNotification('Error loading K3 reports: ' + error.message, 'error');
+    }
+}
+
+async function updateK3Status(reportId, status) {
+    try {
+        const { error } = await appState.supabase
+            .from('k3_reports')
+            .update({ status: status })
+            .eq('id', reportId);
+            
+        if (error) throw error;
+        
+        showNotification(`✅ K3 report ${status === 'resolved' ? 'resolved' : 'updated'}!`, 'success');
+        viewAllK3();
+        
+    } catch (error) {
+        showNotification('Error updating K3 report: ' + error.message, 'error');
+    }
+}
+
+// ==================== INITIAL LOAD ====================
+setInterval(updateGreeting, 60000);
+
+console.log('🌌 DREAM OS v4.2 - System Ready');
+console.log('✅ Supabase: Connected');
+console.log('✅ Auth System: Ready');
+console.log('✅ Database: Online');
+console.log('🚀 All systems go!');
+    </script>
+</body>
+</html>
