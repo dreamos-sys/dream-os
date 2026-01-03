@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a2a">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    
+    <!-- DREAM TEAM STYLE -->
+    <link rel="stylesheet" href="/style.css">
+    
+    <title>🌙 DREAM OS • Power Soul of Shalawat</title>
+    
+    <!-- CRITICAL CSS -->
+    <style>
+        :root {
+            --dream-makkah: #0a0a2a;
+            --dream-gold: #D4AF37;
+            --dream-green: #006B56;
+            --dream-turquoise: #40E0D0;
+            --dream-white: #F8F8F8;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--dream-makkah);
+            color: var(--dream-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Spiritual Overlay */
+        .spiritual-overlay {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(10, 10, 42, 0.9), rgba(0, 107, 86, 0.7));
+            border-bottom: 2px solid var(--dream-gold);
+        }
+        
+        .arabic-text {
+            font-size: 1.5rem;
+            color: var(--dream-gold);
+            font-weight: bold;
+        }
+        
+        .translation {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- SPIRITUAL HEADER -->
+    <div class="spiritual-overlay">
+        <div class="arabic-text">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        <div class="translation">In the name of Allah, the Most Gracious, the Most Merciful</div>
+    </div>
+    
+    <!-- MAIN NAVIGATION -->
+    <nav class="dream-nav" id="main-nav">
+        <div class="nav-brand">
+            <div class="logo">🌙</div>
+            <div class="brand-text">
+                <h1>DREAM OS</h1>
+                <small>Power Soul of Shalawat</small>
+            </div>
+        </div>
+        
+        <div class="nav-menu">
+            <!-- User Modules -->
+            <a href="#booking" class="nav-item active" data-module="booking">
+                <span class="nav-icon">📅</span>
+                <span class="nav-label">Booking</span>
+            </a>
+            
+            <a href="#k3" class="nav-item" data-module="k3">
+                <span class="nav-icon">⚠️</span>
+                <span class="nav-label">Laporan K3</span>
+            </a>
+            
+            <a href="#security" class="nav-item" data-module="security">
+                <span class="nav-icon">🛡️</span>
+                <span class="nav-label">Security</span>
+            </a>
+            
+            <!-- Admin Only -->
+            <a href="#admin" class="nav-item admin-only" data-module="admin">
+                <span class="nav-icon">👔</span>
+                <span class="nav-label">Admin</span>
+            </a>
+            
+            <!-- Ghost Only -->
+            <a href="#ghost" class="nav-item ghost-only" data-module="ghost">
+                <span class="nav-icon">👻</span>
+                <span class="nav-label">Ghost</span>
+            </a>
+        </div>
+        
+        <!-- User Menu -->
+        <div class="user-menu">
+            <button class="user-btn" id="user-menu-btn">
+                <span>👤</span>
+            </button>
+            <div class="user-dropdown" id="user-dropdown">
+                <div class="user-info">
+                    <strong id="user-name">Guest</strong>
+                    <small id="user-role">User</small>
+                </div>
+                <div class="user-actions">
+                    <button onclick="app.login()">🔑 Login</button>
+                    <button onclick="app.settings()">⚙️ Settings</button>
+                    <button onclick="app.logout()">🚪 Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- MAIN APP CONTAINER -->
+    <main class="app-container" id="app">
+        <!-- Module content will be loaded here -->
+        <div class="module-loader">
+            <div class="loader-spinner"></div>
+            <p>Loading DREAM OS...</p>
+        </div>
+    </main>
+    
+    <!-- FLOATING ACTION BUTTON -->
+    <button class="fab" id="fab-button" title="Quick Actions">
+        <span>⚡</span>
+    </button>
+    
+    <!-- FAB MENU -->
+    <div class="fab-menu" id="fab-menu">
+        <button class="fab-item" onclick="app.quickAction('new_booking')">
+            <span>📅</span>
+            <span>New Booking</span>
+        </button>
+        <button class="fab-item" onclick="app.quickAction('k3_report')">
+            <span>⚠️</span>
+            <span>Report K3</span>
+        </button>
+        <button class="fab-item" onclick="app.quickAction('emergency')">
+            <span>🚨</span>
+            <span>Emergency</span>
+        </button>
+        <button class="fab-item" onclick="app.quickAction('call_erwin')">
+            <span>📞</span>
+            <span>Call Pak Erwin</span>
+        </button>
+    </div>
+    
+    <!-- NOTIFICATION TOAST -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="quantum-spinner"></div>
+            <p id="loading-message">Initializing Quantum System...</p>
+        </div>
+    </div>
+    
+    <!-- SUPABASE & CORE SCRIPTS -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="/config.js" type="module"></script>
+    <script src="/app.js" type="module"></script>
+    
+    <!-- SERVICE WORKER REGISTRATION -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+                .catch(err => console.log('❌ Service Worker registration failed:', err));
+        }
+    </script>
+</body>
+</html>
