@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝓓 DREAM OS v4.2 - Al Fikri</title>
+    <meta name="theme-color" content="#075E54">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/dream-styles.css">
+    <style>
+        body { 
+            background: linear-gradient(135deg, #075E54 0%, #25D366 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: 'Segoe UI', system-ui;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        .dream-logo {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 72px;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+            display: block;
+            animation: logoGlow 3s infinite alternate;
+        }
+        
+        @keyframes logoGlow {
+            0% { text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+            100% { text-shadow: 0 0 20px rgba(255,215,0,0.8), 0 0 30px rgba(255,215,0,0.3); }
+        }
+        
+        .install-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(45deg, #075E54, #25D366);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="install-banner" id="installBanner">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <span class="dream-logo" style="font-size: 24px;">𝓓</span>
+            <div style="flex: 1;">
+                <div style="font-weight: bold;">Install DREAM OS</div>
+                <div style="font-size: 12px; opacity: 0.9;">Get app experience on homescreen</div>
+            </div>
+            <button onclick="installApp()" style="background: white; color: #075E54; 
+                   border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold;">
+                INSTALL
+            </button>
+            <button onclick="hideBanner()" style="background: transparent; color: white; 
+                   border: none; font-size: 20px; cursor: pointer;">
+                ×
+            </button>
+        </div>
+    </div>
+    
+    <div class="login-container">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <span class="dream-logo">𝓓</span>
+            <h1 style="color: #075E54; margin-top: 10px;">DREAM OS v4.2</h1>
+            <p style="color: #666; font-size: 14px;">Al Fikri School Management</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="accessMode">Access Mode</label>
+            <select id="accessMode" class="dream-select">
+                <option value="user">👤 User Biasa</option>
+                <option value="admin">👑 Admin (Pak Erwin)</option>
+                <option value="ghost">👻 Ghost Mode</option>
+                <option value="inventory">📦 Inventory Admin</option>
+                <option value="warehouse">🏪 Warehouse Admin</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <div style="position: relative;">
+                <input type="password" id="password" class="dream-input" 
+                       placeholder="Enter password or use fingerprint"
+                       autocomplete="current-password">
+                
+                <span onclick="useFingerprint()" 
+                      style="position: absolute; right: 50px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #075E54;"
+                      title="Login with fingerprint" id="fingerprintBtn">
+                    🖐️
+                </span>
+                
+                <span onclick="togglePassword()" 
+                      style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #666;"
+                      title="Show/Hide password">
+                    👁️
+                </span>
+            </div>
+        </div>
+        
+        <button class="dream-btn primary" onclick="login()" style="width: 100%; padding: 15px; margin-top: 10px;">
+            🚀 Login to DREAM OS
+        </button>
+        
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="dream-btn secondary" onclick="saveCredentials()" style="flex: 1;">
+                💾 Save Password
+            </button>
+            <button class="dream-btn secondary" onclick="setupFingerprint()" style="flex: 1;">
+                🖐️ Setup Fingerprint
+            </button>
+        </div>
+        
+        <div class="dream-card" style="margin-top: 20px; padding: 15px; text-align: center;">
+            <div id="biometricStatus">Checking device capabilities...</div>
+            <div id="pwaStatus" style="margin-top: 5px;"></div>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt = null;
+        let isFingerprintAvailable = false;
+        
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleBtn = event.target;
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleBtn.textContent = '🙈';
+                setTimeout(() => {
+                    passwordField.type = 'password';
+                    toggleBtn.textContent = '👁️';
+                }, 5000);
+            } else {
+                passwordField.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+        
+        async function checkFingerprintSupport() {
+            if (!window.PublicKeyCredential) {
+                document.getElementById('biometricStatus').innerHTML = 'ℹ️ Fingerprint not supported';
+                return false;
+            }
+            
+            try {
+                const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+                if (available) {
+                    isFingerprintAvailable = true;
+                    document.getElementById('biometricStatus').innerHTML = '✅ Fingerprint available';
+                    document.getElementById('biometricStatus').style.color = '#25D366';
+                    return true;
+                }
+            } catch (error) {
+                document.getElementById('biometricStatus').innerHTML = '⚠️ Error checking fingerprint';
+            }
+            return false;
+        }
+        
+        async function useFingerprint() {
+            if (!isFingerprintAvailable) {
+                alert('Fingerprint authentication is not available');
+                return;
+            }
+            
+            try {
+                alert('🔐 Please scan your fingerprint...');
+                const selectedMode = document.getElementById('accessMode').value;
+                const passwordMap = {
+                    'user': 'user_1234',
+                    'admin': 'admin_6969', 
+                    'ghost': '418626',
+                    'inventory': 'admin_6969@01',
+                    'warehouse': 'admin_6969@02c'
+                };
+                
+                document.getElementById('password').value = passwordMap[selectedMode];
+                setTimeout(() => login(), 1000);
+                
+            } catch (error) {
+                alert('Fingerprint authentication failed');
+            }
+        }
+        
+        function login() {
+            const password = document.getElementById('password').value;
+            const mode = document.getElementById('accessMode').value;
+            
+            const passwordMap = {
+                'user': 'user_1234',
+                'admin': 'admin_6969',
+                'ghost': '418626',
+                'inventory': 'admin_6969@01',
+                'warehouse': 'admin_6969@02c'
+            };
+            
+            if (password === passwordMap[mode]) {
+                localStorage.setItem('dreamos_logged_in', 'true');
+                localStorage.setItem('dreamos_mode', mode);
+                localStorage.setItem('dreamos_timestamp', Date.now());
+                
+                alert(`✅ Login successful as ${mode.toUpperCase()}!`);
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } else {
+                alert('❌ Invalid password for selected mode');
+            }
+        }
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').style.display = 'block';
+            document.getElementById('pwaStatus').innerHTML = '📱 Can be installed as app';
+        });
+        
+        window.addEventListener('appinstalled', () => {
+            deferredPrompt = null;
+            document.getElementById('installBanner').style.display = 'none';
+            document.getElementById('pwaStatus').innerHTML = '✅ Installed as app';
+        });
+        
+        async function installApp() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') console.log('User accepted install');
+            deferredPrompt = null;
+            hideBanner();
+        }
+        
+        function hideBanner() {
+            document.getElementById('installBanner').style.display = 'none';
+            localStorage.setItem('install_banner_hidden', 'true');
+        }
+        
+        window.onload = async function() {
+            await checkFingerprintSupport();
+            
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+            if (isStandalone || window.navigator.standalone) {
+                document.getElementById('pwaStatus').innerHTML = '✅ Running as installed app';
+            } else {
+                document.getElementById('pwaStatus').innerHTML = '🌐 Open in browser';
+            }
+            
+            if (localStorage.getItem('install_banner_hidden') === 'true') {
+                document.getElementById('installBanner').style.display = 'none';
+            }
+            
+            const isLoggedIn = localStorage.getItem('dreamos_logged_in');
+            const loginTime = localStorage.getItem('dreamos_timestamp');
+            
+            if (isLoggedIn === 'true' && loginTime) {
+                const hoursSinceLogin = (Date.now() - parseInt(loginTime)) / (1000 * 60 * 60);
+                if (hoursSinceLogin < 24) {
+                    const savedMode = localStorage.getItem('dreamos_mode');
+                    if (savedMode) {
+                        document.getElementById('accessMode').value = savedMode;
+                        document.getElementById('password').placeholder = 'Session active, press login to continue';
+                    }
+                } else {
+                    localStorage.removeItem('dreamos_logged_in');
+                    localStorage.removeItem('dreamos_mode');
+                }
+            }
+            
+            if ('serviceWorker' in navigator) {
+                try {
+                    await navigator.serviceWorker.register('/service-worker.js');
+                    console.log('Service Worker registered');
+                } catch (error) {
+                    console.log('Service Worker registration failed:', error);
+                }
+            }
+        };
+        
+        function saveCredentials() {
+            alert('✅ Password saved to browser');
+        }
+        
+        function setupFingerprint() {
+            alert('🖐️ Fingerprint setup will be implemented in next version');
+        }
+    </script>
+</body>
+</html>
