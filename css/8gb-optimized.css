@@ -1,0 +1,92 @@
+/* 8GB RAM + 128GB Storage Optimized Styles */
+
+:root {
+    /* Enhanced for 8GB RAM */
+    --max-z-index: 9999;
+    --layer-count: 10;
+    --animation-complexity: high;
+    
+    /* 128GB storage allows for more assets */
+    --background-image-quality: url('/assets/bg-2x.jpg');
+    --icon-quality: '2x';
+    --font-preload: true;
+}
+
+/* Advanced animations (only for 8GB+) */
+.advanced-animation {
+    animation: complexAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+@keyframes complexAnimation {
+    0% {
+        transform: translateY(-100px) rotateY(0deg);
+        opacity: 0;
+        filter: blur(10px);
+    }
+    50% {
+        transform: translateY(0) rotateY(180deg);
+        opacity: 1;
+        filter: blur(0);
+    }
+    100% {
+        transform: translateY(0) rotateY(360deg);
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+/* High-quality image rendering */
+.hq-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+
+/* Multiple background layers */
+.multi-layer-bg {
+    background: 
+        linear-gradient(135deg, rgba(7, 94, 84, 0.1) 0%, transparent 50%),
+        linear-gradient(45deg, rgba(37, 211, 102, 0.1) 0%, transparent 50%),
+        url('/assets/pattern.svg');
+    background-blend-mode: multiply;
+}
+
+/* Advanced shadow effects */
+.advanced-shadow {
+    box-shadow: 
+        0 10px 30px rgba(0,0,0,0.1),
+        0 1px 8px rgba(0,0,0,0.05),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+}
+
+/* Real-time data visualization */
+.live-data-pulse {
+    animation: pulse 2s infinite;
+    position: relative;
+}
+
+.live-data-pulse::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid #25D366;
+    border-radius: inherit;
+    animation: ripple 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes ripple {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
