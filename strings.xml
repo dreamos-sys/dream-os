@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- APP INFO -->
+    <string name="app_name">DREAM OS</string>
+    <string name="app_description">Al Fikri School Management System</string>
+    
+    <!-- ASSET STATEMENTS FOR PWA -->
+    <string name="asset_statements">
+        [{
+            \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+            \"target\": {
+                \"namespace\": \"web\",
+                \"site\": \"https://dreamos-sys.github.io/dream-os\"
+            }
+        }]
+    </string>
+    
+    <!-- COLORS -->
+    <color name="colorPrimary">#075E54</color>
+    <color name="colorPrimaryDark">#05483D</color>
+    <color name="colorAccent">#25D366</color>
+    <color name="colorGolden">#FFD700</color>
+    <color name="splash_background">#075E54</color>
+    
+    <!-- MESSAGES -->
+    <string name="welcome_message">Welcome to DREAM OS</string>
+    <string name="loading_message">Loading spiritual interface...</string>
+    <string name="offline_message">You are offline. Some features may not be available.</string>
+    
+    <!-- PERMISSION MESSAGES -->
+    <string name="camera_permission">DREAM OS needs camera access for barcode scanning and K3 reporting</string>
+    <string name="storage_permission">Allow storage access to save reports and backups</string>
+    <string name="notification_permission">Enable notifications for booking alerts and updates</string>
+</resources>
