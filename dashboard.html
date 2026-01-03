@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝓓 DREAM OS - Dashboard</title>
+    <link rel="stylesheet" href="css/dream-styles.css">
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .module-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--dream-primary);
+            box-shadow: 0 10px 25px rgba(7, 94, 84, 0.2);
+        }
+        
+        .module-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .user-info {
+            background: linear-gradient(135deg, #075E54, #25D366);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="user-info">
+        <div class="dream-flex" style="justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="margin: 0;">𝓓 DREAM OS v4.2</h1>
+                <p style="margin: 5px 0 0 0; opacity: 0.9;">Al Fikri School Management</p>
+            </div>
+            <div style="text-align: right;">
+                <div id="currentUser">👤 Loading...</div>
+                <button class="dream-btn" onclick="logout()" style="margin-top: 10px;">
+                    🚪 Logout
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard-grid">
+        <!-- Barcode System -->
+        <div class="module-card" onclick="window.location='barcode-system/'">
+            <div class="module-icon">🏪</div>
+            <h3>Barcode System</h3>
+            <p>Generate, scan, print barcodes</p>
+            <div class="dream-badge">Complete ✓</div>
+        </div>
+        
+        <!-- Inventory Management -->
+        <div class="module-card" onclick="window.location='inventory/'">
+            <div class="module-icon">📦</div>
+            <h3>Inventory Management</h3>
+            <p>Asset tracking with QR code</p>
+            <div class="dream-badge">Ready ✓</div>
+        </div>
+        
+        <!-- Warehouse Management -->
+        <div class="module-card" onclick="window.location='warehouse/'">
+            <div class="module-icon">🏢</div>
+            <h3>Warehouse Management</h3>
+            <p>Stock control system</p>
+            <div class="dream-badge">Ready ✓</div>
+        </div>
+        
+        <!-- Admin Panel -->
+        <div class="module-card" onclick="window.location='admin/'">
+            <div class="module-icon">👻</div>
+            <h3>Admin Panel</h3>
+            <p>System monitoring & logs</p>
+            <div class="dream-badge">In Progress</div>
+        </div>
+        
+        <!-- Smart Booking -->
+        <div class="module-card" onclick="alert('Coming soon!')">
+            <div class="module-icon">📅</div>
+            <h3>Smart Booking</h3>
+            <p>Room booking with conflict detection</p>
+            <div class="dream-badge warning">Soon</div>
+        </div>
+        
+        <!-- K3 System -->
+        <div class="module-card" onclick="alert('Coming soon!')">
+            <div class="module-icon">⚠️</div>
+            <h3>K3 System</h3>
+            <p>Safety management with camera</p>
+            <div class="dream-badge warning">Soon</div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px; padding: 20px; color: #666;">
+        <p>DREAM OS v4.2 • Powered by Dream Team • Al Fikri School</p>
+        <p style="font-size: 12px;">Last updated: <span id="currentDate"></span></p>
+    </div>
+
+    <script>
+        // Check login
+        window.onload = function() {
+            const isLoggedIn = localStorage.getItem('dreamos_logged_in');
+            const userMode = localStorage.getItem('dreamos_mode');
+            
+            if (isLoggedIn !== 'true') {
+                alert('Session expired. Please login again.');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Display user info
+            document.getElementById('currentUser').innerHTML = 
+                `👤 ${userMode ? userMode.toUpperCase() : 'User'} Mode`;
+            
+            // Set current date
+            document.getElementById('currentDate').textContent = 
+                new Date().toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+        };
+        
+        function logout() {
+            localStorage.removeItem('dreamos_logged_in');
+            localStorage.removeItem('dreamos_mode');
+            localStorage.removeItem('dreamos_timestamp');
+            window.location.href = 'index.html';
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'l') {
+                e.preventDefault();
+                logout();
+            }
+        });
+    </script>
+</body>
+</html>
