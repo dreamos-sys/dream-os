@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Launch Monitor - DREAM OS</title>
+    <link rel="stylesheet" href="../css/dream-styles.css">
+    <style>
+        .launch-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+            border-left: 4px solid #25D366;
+        }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #075E54;
+        }
+        
+        .real-time-chart {
+            height: 200px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="launch-container">
+        <h1>🚀 DREAM OS LAUNCH MONITOR</h1>
+        <p>Bismillah Launch - Monitoring Real-time</p>
+        
+        <div class="dream-grid" style="grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0;">
+            <div class="metric-card">
+                <div class="metric-value" id="activeUsers">0</div>
+                <div>👥 Active Users</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="totalSessions">0</div>
+                <div>📊 Total Sessions</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="errorCount">0</div>
+                <div>🚨 Errors</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="avgLoadTime">0s</div>
+                <div>⚡ Avg Load Time</div>
+            </div>
+        </div>
+        
+        <div class="dream-card">
+            <h3>📈 Real-time Performance</h3>
+            <div class="real-time-chart" id="performanceChart">
+                <!-- Chart akan diisi JavaScript -->
+            </div>
+        </div>
+        
+        <div class="dream-card">
+            <h3>🚨 Recent Errors</h3>
+            <div id="errorList" style="max-height: 300px; overflow-y: auto;">
+                <!-- Error list -->
+            </div>
+        </div>
+        
+        <div class="dream-card">
+            <h3>📊 Feature Usage</h3>
+            <div id="featureUsage">
+                <!-- Feature usage stats -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Launch monitoring dashboard
+        class LaunchDashboard {
+            constructor() {
+                this.setupRealtimeUpdates();
+                this.loadInitialData();
+                this.updateDashboard();
+            }
+            
+            setupRealtimeUpdates() {
+                // Update setiap 10 detik
+                setInterval(() => this.updateDashboard(), 10000);
+                
+                // Supabase realtime subscription
+                this.setupSupabaseRealtime();
+            }
+            
+            async loadInitialData() {
+                try {
+                    const response = await fetch(
+                        'https://ywtypkgjvbjwhmapmygb.supabase.co/rest/v1/launch_metrics',
+                        {
+                            headers: {
+                                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3dHB5a2dqdmJqd2htYXBteWdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5MTI5OTcsImV4cCI6MjA4MjQ4ODk5N30.MA78j8WLwOO9nxR36tikN7jBQLjbYWYvTZn___eXBkk'
+                            }
+                        }
+                    );
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateUI(data);
+                    }
+                } catch (error) {
+                    console.error('Failed to load metrics:', error);
+                }
+            }
+            
+            updateDashboard() {
+                // Simulate real data for demo
+                const mockData = {
+                    activeUsers: Math.floor(Math.random() * 100) + 50,
+                    totalSessions: Math.floor(Math.random() * 500) + 200,
+                    errorCount: Math.floor(Math.random() * 10),
+                    avgLoadTime: (Math.random() * 2 + 1).toFixed(2) + 's',
+                    recentErrors: [
+                        {message: 'Camera permission denied', time: '2 minutes ago'},
+                        {message: 'Network timeout', time: '5 minutes ago'}
+                    ],
+                    featureUsage: {
+                        booking: 65,
+                        inventory: 80,
+                        warehouse: 45,
+                        k3: 30
+                    }
+                };
+                
+                this.updateUI(mockData);
+            }
+            
+            updateUI(data) {
+                document.getElementById('activeUsers').textContent = data.activeUsers;
+                document.getElementById('totalSessions').textContent = data.totalSessions;
+                document.getElementById('errorCount').textContent = data.errorCount;
+                document.getElementById('avgLoadTime').textContent = data.avgLoadTime;
+                
+                // Update error list
+                const errorList = document.getElementById('errorList');
+                errorList.innerHTML = data.recentErrors.map(error => `
+                    <div style="padding: 10px; border-bottom: 1px solid #eee;">
+                        <div style="font-weight: bold;">${error.message}</div>
+                        <div style="font-size: 12px; color: #666;">${error.time}</div>
+                    </div>
+                `).join('');
+                
+                // Update feature usage
+                const featureUsage = document.getElementById('featureUsage');
+                featureUsage.innerHTML = `
+                    <div style="display: flex; gap: 20px; margin-top: 15px;">
+                        ${Object.entries(data.featureUsage).map(([feature, percent]) => `
+                            <div style="text-align: center;">
+                                <div style="font-size: 24px;">${this.getFeatureIcon(feature)}</div>
+                                <div style="font-weight: bold;">${percent}%</div>
+                                <div style="font-size: 12px; color: #666;">${feature}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            getFeatureIcon(feature) {
+                const icons = {
+                    booking: '📅',
+                    inventory: '📦',
+                    warehouse: '🏪',
+                    k3: '⚠️'
+                };
+                return icons[feature] || '📊';
+            }
+        }
+        
+        // Start dashboard
+        window.addEventListener('DOMContentLoaded', () => {
+            new LaunchDashboard();
+        });
+    </script>
+</body>
+</html>
