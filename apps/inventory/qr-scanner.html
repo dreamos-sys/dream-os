@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner - DREAM OS</title>
+    <link rel="stylesheet" href="../../css/dream-styles.css">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        .scanner-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        #qr-shaded-region {
+            border: 2px solid #25D366 !important;
+        }
+        
+        .scan-result {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="dream-card" style="margin-bottom: 20px;">
+        <div class="dream-flex" style="justify-content: space-between; align-items: center;">
+            <div>
+                <a href="../" class="dream-btn" style="background: transparent; color: var(--dream-accent);">
+                    ← Back
+                </a>
+                <h2 style="margin: 0 0 0 15px; display: inline-block;">📷 QR Scanner</h2>
+            </div>
+            <button class="dream-btn" onclick="toggleCamera()" id="toggleBtn">
+                🔄 Switch Camera
+            </button>
+        </div>
+    </nav>
+
+    <div class="scanner-container">
+        <div class="dream-card" style="text-align: center;">
+            <h3>Scan QR Code Asset</h3>
+            <p>Point camera at QR code to scan</p>
+            
+            <div id="reader"></div>
+            
+            <div class="dream-flex" style="justify-content: center; gap: 10px; margin-top: 20px;">
+                <button class="dream-btn" onclick="startScanner()" id="startBtn">
+                    ▶️ Start Scanner
+                </button>
+                <button class="dream-btn warning" onclick="stopScanner()" id="stopBtn">
+                    ⏹️ Stop Scanner
+                </button>
+                <button class="dream-btn" onclick="uploadQRImage()">
+                    📸 Upload Image
+                </button>
+            </div>
+        </div>
+        
+        <div class="scan-result" id="scanResult">
+            <h3>🔍 Scan Result</h3>
+            <p>Scan a QR code to see asset information</p>
+        </div>
+        
+        <div class="dream-card" style="margin-top: 20px;">
+            <h4>📋 Recent Scans</h4>
+            <div id="recentScans">
+                <p>No recent scans</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let html5QrCode = null;
+        let currentCameraId = null;
+        let facingMode = "environment"; // "user" for front camera
+        
+        function toggleCamera() {
+            facingMode = facingMode === "environment" ? "user" : "environment";
+            document.getElementById('toggleBtn').innerHTML = 
+                facingMode === "environment" ? "🔄 Front Camera" : "🔄 Back Camera";
+            
+            if (html5QrCode && html5QrCode.isScanning) {
+                stopScanner();
+                setTimeout(() => startScanner(), 500);
+            }
+        }
+        
+        async function startScanner() {
+            if (html5QrCode && html5QrCode.isScanning) {
+                return;
+            }
+            
+            html5QrCode = new Html5Qrcode("reader");
+            
+            const config = { 
+                fps: 10, 
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0
+            };
+            
+            try {
+                await html5QrCode.start(
+                    { facingMode: facingMode },
+                    config,
+                    onScanSuccess,
+                    onScanError
+                );
+                
+                document.getElementById('startBtn').style.display = 'none';
+                document.getElementById('stopBtn').style.display = 'inline-block';
+                
+                // Show camera status
+                document.getElementById('scanResult').innerHTML = `
+                    <div style="color: #25D366; font-weight: bold;">
+                        ✅ Camera active - Point at QR code
+                    </div>
+                `;
+                
+            } catch (err) {
+                console.error("Scanner error:", err);
+                document.getElementById('scanResult').innerHTML = `
+                    <div style="color: red;">
+                        ❌ Camera error: ${err.message}
+                    </div>
+                `;
+            }
+        }
+        
+        function stopScanner() {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('startBtn').style.display = 'inline-block';
+                    document.getElementById('stopBtn').style.display = 'none';
+                    
+                    document.getElementById('scanResult').innerHTML = `
+                        <div style="color: #666;">
+                            ⏸️ Scanner stopped
+                        </div>
+                    `;
+                }).catch(err => {
+                    console.error("Stop error:", err);
+                });
+            }
+        }
+        
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log("QR Code scanned:", decodedText);
+            
+            // Parse QR data
+            let qrData;
+            try {
+                qrData = JSON.parse(decodedText);
+            } catch (e) {
+                qrData = {
+                    type: 'text',
+                    content: decodedText,
+                    timestamp: new Date().toISOString()
+                };
+            }
+            
+            // Display result
+            displayResult(qrData);
+            
+            // Add to recent scans
+            addToRecentScans(qrData);
+            
+            // Play sound
+            playScanSound();
+            
+            // Auto-stop after successful scan
+            setTimeout(() => {
+                if (html5QrCode && html5QrCode.isScanning) {
+                    stopScanner();
+                }
+            }, 1000);
+        }
+        
+        function onScanError(error) {
+            // Ignore common scan errors (no QR code found)
+            if (!error.includes("NotFoundException")) {
+                console.log("Scan error:", error);
+            }
+        }
+        
+        function displayResult(qrData) {
+            let resultHTML = '';
+            
+            if (qrData.type === 'dreamos_asset') {
+                resultHTML = `
+                    <div style="background: linear-gradient(135deg, #075E54, #25D366); color: white; padding: 20px; border-radius: 10px;">
+                        <h3 style="margin-top: 0;">✅ Asset Found!</h3>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
+                            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px;">
+                                <strong>Asset Name</strong><br>
+                                ${qrData.name || 'N/A'}
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px;">
+                                <strong>Asset Code</strong><br>
+                                ${qrData.code || 'N/A'}
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px;">
+                                <strong>Serial Number</strong><br>
+                                ${qrData.serial || 'N/A'}
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px;">
+                                <strong>Location</strong><br>
+                                ${qrData.location || 'N/A'}
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <button class="dream-btn" onclick="viewAsset('${qrData.code}')" 
+                                    style="background: white; color: #075E54;">
+                                👁️ View Asset Details
+                            </button>
+                            <button class="dream-btn ml-2" onclick="startScanner()"
+                                    style="background: var(--dream-accent); color: black;">
+                                🔄 Scan Another
+                            </button>
+                        </div>
+                        
+                        <div style="margin-top: 15px; font-size: 12px; opacity: 0.8;">
+                            Scanned: ${new Date().toLocaleString('id-ID')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultHTML = `
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                        <h3>📋 Text Content</h3>
+                        <div style="background: white; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                            <code style="word-break: break-all;">${qrData.content}</code>
+                        </div>
+                        <button class="dream-btn" onclick="copyToClipboard('${qrData.content.replace(/'/g, "\\'")}')">
+                            📋 Copy Text
+                        </button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('scanResult').innerHTML = resultHTML;
+        }
+        
+        function addToRecentScans(qrData) {
+            let recentScans = JSON.parse(localStorage.getItem('recent_qr_scans') || '[]');
+            
+            // Add new scan
+            recentScans.unshift({
+                data: qrData,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Keep only last 10 scans
+            recentScans = recentScans.slice(0, 10);
+            
+            // Save to localStorage
+            localStorage.setItem('recent_qr_scans', JSON.stringify(recentScans));
+            
+            // Update display
+            updateRecentScansDisplay(recentScans);
+        }
+        
+        function updateRecentScansDisplay(scans) {
+            if (scans.length === 0) {
+                document.getElementById('recentScans').innerHTML = '<p>No recent scans</p>';
+                return;
+            }
+            
+            let html = '<div style="max-height: 200px; overflow-y: auto;">';
+            
+            scans.forEach((scan, index) => {
+                const data = scan.data;
+                const time = new Date(scan.timestamp).toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                html += `
+                    <div style="padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: bold;">${data.name || data.content?.substring(0, 30) || 'QR Code'}</div>
+                            <div style="font-size: 12px; color: #666;">${data.code || ''}</div>
+                        </div>
+                        <div style="font-size: 12px; color: #999;">${time}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('recentScans').innerHTML = html;
+        }
+        
+        function playScanSound() {
+            try {
+                const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3');
+                audio.volume = 0.3;
+                audio.play();
+            } catch (e) {
+                // Ignore audio errors
+            }
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Text copied to clipboard!');
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                alert('❌ Failed to copy');
+            });
+        }
+        
+        function uploadQRImage() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    // For now, show a message
+                    document.getElementById('scanResult').innerHTML = `
+                        <div style="text-align: center; padding: 30px;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">📸</div>
+                            <h3>Image Scanning</h3>
+                            <p>This feature will be available in the next update!</p>
+                            <p style="font-size: 14px; color: #666;">For now, please use the camera scanner above.</p>
+                        </div>
+                    `;
+                }
+            };
+            
+            input.click();
+        }
+        
+        function viewAsset(code) {
+            // Navigate to asset details page
+            window.location.href = `view.html?code=${encodeURIComponent(code)}`;
+        }
+        
+        // Initialize
+        window.onload = function() {
+            // Load recent scans
+            const recentScans = JSON.parse(localStorage.getItem('recent_qr_scans') || '[]');
+            updateRecentScansDisplay(recentScans);
+            
+            // Auto-start scanner on page load
+            setTimeout(() => {
+                startScanner();
+            }, 1000);
+        };
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop();
+            }
+        });
+    </script>
+</body>
+</html>
