@@ -1,0 +1,110 @@
+{
+  "name": "DREAM OS Quantum",
+  "short_name": "DREAM OS",
+  "description": "Smart School Management System - Booking, K3, Security, Admin, Ghost Mode",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0a0a2a",
+  "background_color": "#0a0a2a",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshots/booking.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/assets/screenshots/k3.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["business", "productivity", "education"],
+  "shortcuts": [
+    {
+      "name": "New Booking",
+      "short_name": "Booking",
+      "description": "Create new facility booking",
+      "url": "/?module=booking",
+      "icons": [
+        {
+          "src": "/assets/shortcuts/booking.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "K3 Report",
+      "short_name": "K3",
+      "description": "Report safety issue",
+      "url": "/?module=k3",
+      "icons": [
+        {
+          "src": "/assets/shortcuts/k3.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Security Report",
+      "short_name": "Security",
+      "description": "Submit security daily report",
+      "url": "/?module=security",
+      "icons": [
+        {
+          "src": "/assets/shortcuts/security.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
