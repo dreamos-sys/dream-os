@@ -1,0 +1,150 @@
+cat > data/sarana.json << 'EOF'
+{
+  "sarana": [
+    {
+      "id": 1,
+      "nama": "Musholla Al-Ikhlas",
+      "kapasitas": 50,
+      "lantai": 1,
+      "gedung": "A",
+      "fasilitas": ["Mikrofon", "Speaker", "Karpet", "AC"]
+    },
+    {
+      "id": 2,
+      "nama": "Lab Komputer 1",
+      "kapasitas": 30,
+      "lantai": 2,
+      "gedung": "B",
+      "fasilitas": ["PC 30 unit", "Proyektor", "AC", "WiFi"]
+    },
+    {
+      "id": 3,
+      "nama": "Lab Komputer 2",
+      "kapasitas": 30,
+      "lantai": 2,
+      "gedung": "B",
+      "fasilitas": ["PC 30 unit", "Proyektor", "AC", "WiFi"]
+    },
+    {
+      "id": 4,
+      "nama": "Lab Bahasa",
+      "kapasitas": 40,
+      "lantai": 3,
+      "gedung": "C",
+      "fasilitas": ["Headset 40", "PC Guru", "Proyektor", "AC"]
+    },
+    {
+      "id": 5,
+      "nama": "Aula Serbaguna",
+      "kapasitas": 200,
+      "lantai": 1,
+      "gedung": "D",
+      "fasilitas": ["Panggung", "Sound System", "AC", "Kursi 200"]
+    },
+    {
+      "id": 6,
+      "nama": "Lapangan Basket",
+      "kapasitas": 100,
+      "lantai": 0,
+      "gedung": "Outdoor",
+      "fasilitas": ["Ring Basket", "Pencahayaan", "Tribun"]
+    },
+    {
+      "id": 7,
+      "nama": "Lapangan Futsal",
+      "kapasitas": 50,
+      "lantai": 0,
+      "gedung": "Outdoor",
+      "fasilitas": ["Gawang", "Jaring", "Pencahayaan"]
+    },
+    {
+      "id": 8,
+      "nama": "Ruang Guru",
+      "kapasitas": 40,
+      "lantai": 1,
+      "gedung": "A",
+      "fasilitas": ["Meja Guru", "AC", "WiFi", "Printer"]
+    },
+    {
+      "id": 9,
+      "nama": "Ruang Kepala Sekolah",
+      "kapasitas": 10,
+      "lantai": 1,
+      "gedung": "A",
+      "fasilitas": ["Meeting Table", "AC", "TV", "Sound System"]
+    },
+    {
+      "id": 10,
+      "nama": "Ruang TU",
+      "kapasitas": 15,
+      "lantai": 1,
+      "gedung": "A",
+      "fasilitas": ["PC Admin", "Printer", "AC", "Filing Cabinet"]
+    },
+    {
+      "id": 11,
+      "nama": "Koperasi Siswa",
+      "kapasitas": 20,
+      "lantai": 1,
+      "gedung": "A",
+      "fasilitas": ["Counter", "Display", "AC", "Kasir"]
+    },
+    {
+      "id": 12,
+      "nama": "Kantin Sehat",
+      "kapasitas": 60,
+      "lantai": 1,
+      "gedung": "A",
+      "fasilitas": ["Meja Makan", "Dapur", "AC", "Wastafel"]
+    },
+    {
+      "id": 13,
+      "nama": "Perpustakaan",
+      "kapasitas": 40,
+      "lantai": 3,
+      "gedung": "C",
+      "fasilitas": ["Rak Buku", "Meja Baca", "AC", "WiFi"]
+    },
+    {
+      "id": 14,
+      "nama": "Ruang OSIS",
+      "kapasitas": 20,
+      "lantai": 2,
+      "gedung": "B",
+      "fasilitas": ["Meja Rapat", "Whiteboard", "AC", "Storage"]
+    },
+    {
+      "id": 15,
+      "nama": "Ruang Pramuka",
+      "kapasitas": 30,
+      "lantai": 1,
+      "gedung": "D",
+      "fasilitas": ["Perlengkapan Pramuka", "AC", "Storage"]
+    },
+    {
+      "id": 16,
+      "nama": "Green House",
+      "kapasitas": 15,
+      "lantai": 0,
+      "gedung": "Outdoor",
+      "fasilitas": ["Tanaman", "Peralatan Berkebun", "Irigasi"]
+    },
+    {
+      "id": 17,
+      "nama": "Taman Baca",
+      "kapasitas": 25,
+      "lantai": 0,
+      "gedung": "Outdoor",
+      "fasilitas": ["Gazebo", "Kursi", "Rak Buku", "Pencahayaan"]
+    },
+    {
+      "id": 18,
+      "nama": "Parkir Guru",
+      "kapasitas": 50,
+      "lantai": 0,
+      "gedung": "Outdoor",
+      "fasilitas": ["CCTV", "Pagar", "Pencahayaan", "Security"]
+    }
+  ]
+}
+EOF
