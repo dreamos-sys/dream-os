@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- ✅ PWA META TAGS -->
+    <meta name="application-name" content="Dream OS">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dream OS">
+    <meta name="description" content="Enterprise OS dengan Progressive Web Application standar ISO">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileColor" content="#10b981">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- ✅ SECURITY HEADERS -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://ywtpykgjvbjwhmapmygb.supabase.co;
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: https:;
+        connect-src 'self' https://ywtpykgjvbjwhmapmygb.supabase.co;
+        font-src 'self' https://cdnjs.cloudflare.com;
+        frame-src 'none';
+        object-src 'none';
+        base-uri 'self';
+        form-action 'self';
+    ">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <!-- ✅ ICONS -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.webmanifest?v=4.1">
+    
+    <!-- ✅ FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <title>Dream OS Neural Gateway | ISO 27001 Compliant</title>
+    
+    <style>
+        /* ✅ CRITICAL CSS */
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #3b82f6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --background: #000000;
+            --text: #ffffff;
+            --text-secondary: #9ca3af;
+            --card-bg: rgba(30, 41, 59, 0.7);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* ✅ LOADER */
+        .loader-container {
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .neural-loader {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        
+        .neural-loader::before,
+        .neural-loader::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .neural-loader::before {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0.3;
+        }
+        
+        .neural-loader::after {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            background: var(--primary);
+            box-shadow: 0 0 30px var(--primary);
+            animation-delay: 0.5s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+        
+        /* ✅ STATUS */
+        #status {
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            color: var(--primary);
+            animation: textPulse 1.5s infinite;
+        }
+        
+        .device-info {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            font-family: monospace;
+            opacity: 0;
+            animation: fadeIn 1s 1s forwards;
+        }
+        
+        /* ✅ MANUAL SELECTOR */
+        .manual-selector {
+            margin-top: 40px;
+            opacity: 0;
+            animation: slideUp 0.5s 2s forwards;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .mode-btn {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--primary);
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .mode-btn:hover {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        }
+        
+        /* ✅ OFFLINE INDICATOR */
+        .offline-indicator {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--danger);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            z-index: 1001;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        
+        /* ✅ PROGRESS BAR */
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin: 20px auto;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* ✅ ANIMATIONS */
+        @keyframes textPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        
+        /* ✅ RESPONSIVE */
+        @media (max-width: 768px) {
+            .manual-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .mode-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #status {
+                font-size: 0.9rem;
+            }
+            
+            .mode-btn {
+                padding: 12px 20px;
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ✅ OFFLINE INDICATOR -->
+    <div class="offline-indicator" id="offlineIndicator">
+        <i class="fas fa-wifi-slash"></i> Anda sedang offline
+    </div>
+    
+    <!-- ✅ MAIN LOADER -->
+    <div class="loader-container">
+        <div class="neural-loader"></div>
+        
+        <div class="status-container">
+            <div id="status">NEURAL HANDSHAKE...</div>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="device-info" id="deviceInfo"></div>
+        </div>
+    </div>
+    
+    <!-- ✅ MANUAL MODE SELECTOR -->
+    <div class="manual-selector">
+        <button class="mode-btn" onclick="go('low')" id="lowBtn">
+            <i class="fas fa-mobile-alt"></i>
+            LITE MODE
+            <span class="description">Feature phones & low-end</span>
+        </button>
+        
+        <button class="mode-btn" onclick="go('mid')" id="midBtn">
+            <i class="fas fa-tablet-alt"></i>
+            BALANCED
+            <span class="description">Smartphone & tablet</span>
+        </button>
+        
+        <button class="mode-btn" onclick="go('high')" id="highBtn">
+            <i class="fas fa-desktop"></i>
+            ULTRA MODE
+            <span class="description">Desktop & high-end</span>
+        </button>
+    </div>
+
+    <!-- ✅ NOSCRIPT FALLBACK -->
+    <noscript>
+        <style>
+            .loader-container, .manual-selector { display: none !important; }
+            body::before {
+                content: "JavaScript diperlukan untuk menjalankan Dream OS. Mohon aktifkan JavaScript di browser Anda.";
+                display: block;
+                padding: 40px;
+                text-align: center;
+                color: var(--danger);
+                font-size: 1.2rem;
+            }
+        </style>
+    </noscript>
+
+    <script>
+        // ✅ DREAM OS v4.1 - COMPLETE DATA SYSTEM
+        const DREAM_SYSTEM = {
+            // WhatsApp Contact
+            WHATSAPP_PAK_ERWIN: '628886183954',
+            
+            // ✅ COMPLETE SARANA DATA (18 SARANA)
+            SARANA_DATA: [
+                "Musholla Al-Ikhlas",
+                "Lab Komputer 1", 
+                "Lab Komputer 2",
+                "Lab Bahasa",
+                "Aula Serbaguna",
+                "Lapangan Basket",
+                "Lapangan Futsal",
+                "Ruang Guru",
+                "Ruang Kepala Sekolah",
+                "Ruang TU",
+                "Koperasi Siswa",
+                "Kantin Sehat",
+                "Perpustakaan",
+                "Ruang OSIS",
+                "Ruang Pramuka",
+                "Green House",
+                "Taman Baca",
+                "Parkir Guru"
+            ],
+            
+            // ✅ ALAT DATA (12 ALAT)
+            ALAT_DATA: [
+                "Proyektor",
+                "Laptop",
+                "Sound System",
+                "Kamera DSLR",
+                "Printer",
+                "Scanner",
+                "AC Split",
+                "Kipas Angin",
+                "Meja Lipat",
+                "Kursi Plastik",
+                "Papan Tulis Whiteboard",
+                "Microphone Wireless"
+            ],
+            
+            // ✅ SECURITY SHIFT DATA
+            SECURITY_SHIFTS: [
+                "Pagi (06:00 - 14:00)",
+                "Siang (14:00 - 22:00)", 
+                "Malam (22:00 - 06:00)"
+            ],
+            
+            // ✅ K3 DISPATCH SYSTEM
+            K3_DISPATCH: {
+                Kerusakan: 'MAINTENANCE',
+                Kehilangan: 'SECURITY',
+                Kebersihan: 'CLEANING SERVICE',
+                Listrik: 'ELECTRICIAN',
+                Plumbing: 'PLUMBER',
+                Internet: 'IT SUPPORT'
+            },
+            
+            // ✅ FUNCTIONS
+            getCurrentDate: function() {
+                const now = new Date();
+                return now.toISOString().split('T')[0];
+            },
+            
+            getCurrentTime: function() {
+                const now = new Date();
+                return now.toTimeString().slice(0,5);
+            },
+            
+            // ✅ GENERATE SECURITY REPORT
+            generateSecurityReport: function(data) {
+                return `*LAPORAN HARIAN SECURITY*
+📅 Tanggal: ${data.tanggal}
+🕐 Shift: ${data.shift}
+📍 Pos: ${data.pos}
+👮 Petugas: ${data.petugas}
+
+📋 KONDISI UMUM:
+${data.kondisi_umum}
+
+🚨 KEJADIAN KHUSUS:
+${data.kejadian_khusus || "Tidak ada"}
+
+🔍 PEMERIKSAAN:
+1. CCTV: ${data.cctv}
+2. Gate: ${data.gate}
+3. Lampu: ${data.lampu}
+4. Pagar: ${data.pagar}
+
+📝 CATATAN:
+${data.catatan || "-"}
+
+_Disampaikan oleh:_
+${data.petugas}
+📞 0821-xxxx-xxxx
+
+_Laporan dikirim via Dream OS v4.1_`;
+            },
+            
+            // ✅ GENERATE BOOKING MESSAGE
+            generateBookingMessage: function(data) {
+                return `*BOOKING SARANA - SIF AL FIKRI*
+🏢 SARANA: ${data.sarana}
+📅 TANGGAL: ${data.tanggal}
+⏰ WAKTU: ${data.waktu_mulai} - ${data.waktu_selesai}
+👤 PEMESAN: ${data.nama}
+🏫 KELAS/JABATAN: ${data.kelas}
+📞 WHATSAPP: ${data.whatsapp}
+👥 JUMLAH PESERTA: ${data.jumlah_peserta}
+🎯 TUJUAN: ${data.tujuan}
+
+📋 RINCIAN KEBUTUHAN:
+${data.kebutuhan || "-"}
+
+✅ PERLENGKAPAN TAMBAHAN:
+${data.perlengkapan || "Tidak ada"}
+
+_Disetujui oleh:_
+1. Pak Hanung Budianto, S.E.
+2. Pak Erwin Syah
+
+📝 KETERANGAN:
+${data.keterangan || "-"}`;
+            },
+            
+            // ✅ GENERATE K3 REPORT
+            generateK3Report: function(data) {
+                const team = this.K3_DISPATCH[data.jenis] || 'GENERAL';
+                return `*LAPORAN K3 - ${data.jenis.toUpperCase()}*
+📍 LOKASI: ${data.lokasi}
+📋 DETAIL: ${data.detail}
+🚨 URGENSI: ${data.urgensi}
+👤 PELAPOR: ${data.pelapor}
+📞 KONTAK: ${data.kontak}
+📸 FOTO: ${data.foto ? "Ada" : "Tidak ada"}
+
+🚨 DISPATCH KE: ${team}
+
+⏰ WAKTU LAPOR: ${this.getCurrentTime()}
+📅 TANGGAL: ${this.getCurrentDate()}
+
+📞 KOORDINATOR: Pak Erwin Syah
+☎️ ${this.WHATSAPP_PAK_ERWIN}`;
+            }
+        };
+        
+        // ✅ DYNAMIC BASE PATH FOR GITHUB PAGES
+        function getBasePath() {
+            const path = window.location.pathname;
+            if (path.includes('/dream-os/') || path.includes('/dream-os')) {
+                return '/dream-os/';
+            }
+            return '/';
+        }
+        
+        // ✅ SERVICE WORKER REGISTRATION
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                const basePath = getBasePath();
+                const swPath = `${basePath}sw.js`;
+                
+                navigator.serviceWorker.register(swPath).then(function(registration) {
+                    console.log('✅ ServiceWorker registered:', swPath);
+                }).catch(function(err) {
+                    console.log('❌ ServiceWorker failed:', err);
+                });
+            });
+        }
+        
+        // ✅ DEVICE DETECTION
+        function detectDeviceCapabilities() {
+            const ua = navigator.userAgent.toLowerCase();
+            const mem = navigator.deviceMemory || 1;
+            const cores = navigator.hardwareConcurrency || 1;
+            
+            return {
+                isKaiOS: ua.includes('kaios') || ua.includes('nokia'),
+                isSamsungA15: ua.includes('sm-a15') || ua.includes('samsung a15'),
+                memory: mem,
+                cores: cores,
+                screenSize: `${window.innerWidth}x${window.innerHeight}`,
+                isTouch: 'ontouchstart' in window
+            };
+        }
+        
+        // ✅ PROGRESS ANIMATION
+        function simulateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const progressContainer = document.getElementById('progressContainer');
+            
+            progressContainer.style.display = 'block';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(autoSelectMode, 500);
+                }
+                
+                progressBar.style.width = `${progress}%`;
+                
+                const status = document.getElementById('status');
+                if (progress < 30) {
+                    status.textContent = 'CHECKING DEVICE...';
+                } else if (progress < 60) {
+                    status.textContent = 'LOADING MODULES...';
+                } else if (progress < 90) {
+                    status.textContent = 'OPTIMIZING...';
+                } else {
+                    status.textContent = 'READY';
+                }
+            }, 200);
+        }
+        
+        // ✅ AUTO-SELECT MODE
+        function autoSelectMode() {
+            const caps = detectDeviceCapabilities();
+            
+            // Update button states
+            document.getElementById('lowBtn').style.opacity = 
+                (caps.isKaiOS || caps.isSamsungA15 || caps.memory < 1) ? '1' : '0.5';
+            
+            document.getElementById('midBtn').style.opacity = 
+                (caps.memory >= 1 && caps.memory < 4) ? '1' : '0.5';
+            
+            document.getElementById('highBtn').style.opacity = 
+                (caps.memory >= 4 && !caps.isTouch) ? '1' : '0.5';
+            
+            // Device info display
+            document.getElementById('deviceInfo').innerHTML = `
+                ${caps.screenSize} | RAM: ${caps.memory}GB | CPU: ${caps.cores} core
+            `;
+            
+            // Auto-select logic
+            if (caps.isKaiOS || caps.isSamsungA15 || caps.memory < 0.5) {
+                go('low');
+            } else if (caps.memory >= 4 && !caps.isTouch && caps.cores > 4) {
+                go('high');
+            } else {
+                go('mid');
+            }
+        }
+        
+        // ✅ NAVIGATION WITH ERROR HANDLING
+        function go(path) {
+            const status = document.getElementById('status');
+            status.textContent = `LOADING ${path.toUpperCase()} MODE...`;
+            
+            // Save preference
+            localStorage.setItem('dreamos_preferred_mode', path);
+            
+            // Redirect dengan timeout
+            setTimeout(() => {
+                window.location.href = `${path}/index.html?v=4.1`;
+            }, 800);
+        }
+        
+        // ✅ OFFLINE DETECTION
+        function updateOnlineStatus() {
+            const offlineIndicator = document.getElementById('offlineIndicator');
+            
+            if (navigator.onLine) {
+                offlineIndicator.style.display = 'none';
+            } else {
+                offlineIndicator.style.display = 'block';
+            }
+        }
+        
+        // ✅ INITIALIZE
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Dream OS v4.1 Initialized');
+            console.log('📦 Data System Ready:', DREAM_SYSTEM);
+            
+            // Check previous preference
+            const preferredMode = localStorage.getItem('dreamos_preferred_mode');
+            if (preferredMode && !sessionStorage.getItem('auto_redirected')) {
+                sessionStorage.setItem('auto_redirected', 'true');
+                go(preferredMode);
+                return;
+            }
+            
+            // Start progress
+            simulateProgress();
+            
+            // Setup event listeners
+            updateOnlineStatus();
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.key === '1') go('low');
+                if (e.key === '2') go('mid');
+                if (e.key === '3') go('high');
+                if (e.key === '0') localStorage.clear();
+            });
+        });
+        
+        // ✅ ERROR HANDLING
+        window.addEventListener('error', function(e) {
+            console.error('❌ Error:', e.error);
+            // Fallback to mid mode
+            setTimeout(() => {
+                localStorage.setItem('dreamos_preferred_mode', 'mid');
+                window.location.href = 'mid/index.html?v=4.1';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
