@@ -1,0 +1,100 @@
+cat > templates/security-report.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laporan Security - SIF Al Fikri</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .header { text-align: center; border-bottom: 3px solid #10b981; padding-bottom: 20px; }
+        .logo { width: 100px; height: auto; }
+        .title { color: #10b981; font-size: 24px; margin: 10px 0; }
+        .subtitle { color: #666; font-size: 14px; }
+        .section { margin: 30px 0; }
+        .section-title { background: #f0f9ff; padding: 10px; border-left: 4px solid #10b981; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .info-item { padding: 10px; border-bottom: 1px solid #eee; }
+        .label { font-weight: bold; color: #333; }
+        .value { color: #666; }
+        .signature { margin-top: 100px; display: grid; grid-template-columns: 1fr 1fr; gap: 100px; }
+        .signature-line { border-top: 1px solid #000; width: 200px; margin-top: 60px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { background: #f0f9ff; padding: 10px; text-align: left; border: 1px solid #ddd; }
+        td { padding: 10px; border: 1px solid #ddd; }
+        .footer { margin-top: 50px; text-align: center; color: #999; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">LAPORAN HARIAN SECURITY</div>
+        <div class="subtitle">SIF AL FIKRI - SISTEM PENGAMANAN SEKOLAH</div>
+        <div class="subtitle">Dream OS v4.1 | Generated: {{timestamp}}</div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">INFORMASI UMUM</div>
+        <div class="info-grid">
+            <div class="info-item"><span class="label">Tanggal:</span> <span class="value">{{date}}</span></div>
+            <div class="info-item"><span class="label">Shift:</span> <span class="value">{{shift}}</span></div>
+            <div class="info-item"><span class="label">Petugas:</span> <span class="value">{{officer}}</span></div>
+            <div class="info-item"><span class="label">Pos:</span> <span class="value">{{post}}</span></div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">KONDISI UMUM</div>
+        <div style="padding: 20px; background: #f9f9f9; border-radius: 5px;">
+            {{general_condition}}
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">KEJADIAN KHUSUS</div>
+        <div style="padding: 20px; background: #fff3cd; border-radius: 5px;">
+            {{special_events}}
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">PEMERIKSAAN PERALATAN</div>
+        <table>
+            <tr>
+                <th>Peralatan</th>
+                <th>Status</th>
+                <th>Keterangan</th>
+            </tr>
+            <tr><td>CCTV System</td><td>{{cctv_status}}</td><td>{{cctv_notes}}</td></tr>
+            <tr><td>Gate & Access Control</td><td>{{gate_status}}</td><td>{{gate_notes}}</td></tr>
+            <tr><td>Penerangan</td><td>{{lighting_status}}</td><td>{{lighting_notes}}</td></tr>
+            <tr><td>Pagar & Boundary</td><td>{{fence_status}}</td><td>{{fence_notes}}</td></tr>
+            <tr><td>Fire Alarm System</td><td>{{fire_alarm_status}}</td><td>{{fire_alarm_notes}}</td></tr>
+        </table>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">CATATAN KHUSUS</div>
+        <div style="padding: 20px; border: 1px dashed #10b981; border-radius: 5px;">
+            {{special_notes}}
+        </div>
+    </div>
+    
+    <div class="signature">
+        <div>
+            <div>Petugas Security</div>
+            <div class="signature-line"></div>
+            <div>( {{officer}} )</div>
+        </div>
+        <div>
+            <div>Koordinator Security</div>
+            <div class="signature-line"></div>
+            <div>( Pak Erwin Syah )</div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        Dokumen ini dibuat secara otomatis oleh Dream OS v4.1<br>
+        SIF Al Fikri | ISO 27001:2022 Compliant<br>
+        {{timestamp}}
+    </div>
+</body>
+</html>
+EOF
